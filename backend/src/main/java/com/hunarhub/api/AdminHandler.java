@@ -1,6 +1,7 @@
 package com.hunarhub.api;
 
 import com.hunarhub.db.DatabaseConnection;
+import com.hunarhub.utils.EmailSender;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import org.json.JSONArray;
@@ -169,6 +170,26 @@ public class AdminHandler {
                     ps.setInt(2, workerId);
                     int rows = ps.executeUpdate();
                     if (rows > 0) {
+                        // Send approval/rejection email to worker (non-critical)
+                        try {
+                            PreparedStatement ep = conn.prepareStatement(
+                                "SELECT u.email, u.name, w.category FROM users u " +
+                                "JOIN workers w ON u.id = w.user_id WHERE w.worker_id = ?");
+                            ep.setInt(1, workerId);
+                            ResultSet er = ep.executeQuery();
+                            if (er.next()) {
+                                String wEmail    = er.getString("email");
+                                String wName     = er.getString("name");
+                                String wCategory = er.getString("category");
+                                if ("APPROVED".equals(status)) {
+                                    EmailSender.sendWorkerApproved(wEmail, wName, wCategory);
+                                } else {
+                                    EmailSender.sendWorkerRejected(wEmail, wName);
+                                }
+                            }
+                        } catch (Exception emailEx) {
+                            System.err.println("Approval email failed (non-fatal): " + emailEx.getMessage());
+                        }
                         sendResponse(exchange, 200, "{\"message\":\"Worker status updated to " + status + "\"}");
                     } else {
                         sendResponse(exchange, 404, "{\"error\":\"Worker not found\"}");

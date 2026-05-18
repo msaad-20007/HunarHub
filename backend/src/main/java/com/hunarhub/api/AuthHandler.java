@@ -99,8 +99,11 @@ public class AuthHandler {
                     }
 
                     // Send Welcome Email
-                    String emailBody = "Hello " + name + ",\n\nWelcome to HunarHub! Your account has been successfully created.\n\nBest Regards,\nHunarHub Team";
-                    EmailSender.sendEmail(email, "Welcome to HunarHub!", emailBody);
+                    if ("WORKER".equals(role)) {
+                        EmailSender.sendWelcomeWorker(email, name, json.getString("category"));
+                    } else {
+                        EmailSender.sendWelcomeCustomer(email, name);
+                    }
 
                     sendResponse(exchange, 201, "{\"message\": \"Registration successful\", \"userId\": " + userId + "}");
                 } else {

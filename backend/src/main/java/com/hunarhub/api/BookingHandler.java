@@ -161,16 +161,21 @@ public class BookingHandler implements HttpHandler {
                 // Notify worker via email (non-critical — never fail the booking if email fails)
                 try {
                     PreparedStatement wstmt = conn.prepareStatement(
-                        "SELECT u.email, u.name FROM users u " +
+                        "SELECT u.email, u.name, u.city FROM users u " +
                         "JOIN workers w ON u.id = w.user_id WHERE w.worker_id = ?");
                     wstmt.setInt(1, workerId);
                     ResultSet wrs = wstmt.executeQuery();
                     if (wrs.next()) {
-                        String workerEmail = wrs.getString("email");
-                        String workerName  = wrs.getString("name");
-                        String emailBody   = "Hello " + workerName + ",\n\nYou have received a new " + type +
-                            " booking request on HunarHub. Please check your dashboard to accept or reject it.\n\nBest Regards,\nHunarHub Team";
-                        EmailSender.sendEmail(workerEmail, "New " + type + " Booking Request", emailBody);
+                        // Also get customer name
+                        PreparedStatement cname = conn.prepareStatement(
+                            "SELECT u.name FROM users u JOIN customers c ON u.id = c.user_id WHERE c.user_id = ?");
+                        cname.setInt(1, customerId);
+                        ResultSet cnrs = cname.executeQuery();
+                        String custName = cnrs.next() ? cnrs.getString("name") : "A customer";
+                        String dateStr  = scheduledAt != null ? scheduledAt : new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm").format(new java.util.Date());
+                        EmailSender.sendNewBookingToWorker(
+                            wrs.getString("email"), wrs.getString("name"),
+                            custName, type, newBookingId, dateStr);
                     }
                 } catch (Exception emailEx) {
                     System.err.println("Email notification failed (non-fatal): " + emailEx.getMessage());
@@ -289,21 +294,31 @@ public class BookingHandler implements HttpHandler {
                 int rows = ps.executeUpdate();
 
                 if (rows > 0) {
-                    // Notify customer (non-critical — never fail the status update if email fails)
+                    // Notify customer with rich typed email (non-critical)
                     try {
                         PreparedStatement nstmt = conn.prepareStatement(
-                            "SELECT cu.email, cu.name FROM bookings b " +
-                            "JOIN customers c ON b.customer_id = c.customer_id " +
-                            "JOIN users cu    ON c.user_id     = cu.id " +
+                            "SELECT cu.email, cu.name, wu.name AS worker_name, w.category, b.booking_date " +
+                            "FROM bookings b " +
+                            "JOIN customers c  ON b.customer_id = c.customer_id " +
+                            "JOIN users cu     ON c.user_id     = cu.id " +
+                            "JOIN workers w    ON b.worker_id   = w.worker_id " +
+                            "JOIN users wu     ON w.user_id     = wu.id " +
                             "WHERE b.booking_id = ?");
                         nstmt.setInt(1, bookingId);
                         ResultSet nrs = nstmt.executeQuery();
                         if (nrs.next()) {
                             String customerEmail = nrs.getString("email");
                             String customerName  = nrs.getString("name");
-                            String emailBody = "Hello " + customerName + ",\n\nYour booking #" + bookingId +
-                                " has been " + status.toLowerCase() + " by the worker.\n\nBest Regards,\nHunarHub Team";
-                            EmailSender.sendEmail(customerEmail, "Booking " + status + " - HunarHub", emailBody);
+                            String workerName    = nrs.getString("worker_name");
+                            String category      = nrs.getString("category");
+                            String bookingDate   = nrs.getString("booking_date");
+                            if ("ACCEPTED".equals(status)) {
+                                EmailSender.sendBookingAccepted(customerEmail, customerName, workerName, category, bookingId, bookingDate);
+                            } else if ("REJECTED".equals(status)) {
+                                EmailSender.sendBookingRejected(customerEmail, customerName, workerName, bookingId);
+                            } else if ("COMPLETED".equals(status)) {
+                                EmailSender.sendBookingCompleted(customerEmail, customerName, workerName, category, bookingId);
+                            }
                         }
                     } catch (Exception emailEx) {
                         System.err.println("Email notification failed (non-fatal): " + emailEx.getMessage());
