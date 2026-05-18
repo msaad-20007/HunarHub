@@ -1,20 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { NavigationContainer, DefaultTheme } from '@react-native-navigation/native';
-import { createNativeStackNavigator } from '@react-native-navigation/native-stack';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { COLORS } from '../theme/Theme';
+import { AuthContext } from '../context/AuthContext';
 
-// Import Screens (to be created)
-import LoginScreen from '../screens/auth/LoginScreen';
-import SignupScreen from '../screens/auth/SignupScreen';
-import CustomerHomeScreen from '../screens/customer/HomeScreen';
+import SplashScreen  from '../screens/SplashScreen';
+import LandingScreen from '../screens/LandingScreen';
+import LoginScreen   from '../screens/auth/LoginScreen';
+import SignupScreen  from '../screens/auth/SignupScreen';
+
+import CustomerHomeScreen  from '../screens/customer/HomeScreen';
 import WorkerDetailsScreen from '../screens/customer/WorkerDetailsScreen';
-import BookingScreen from '../screens/customer/BookingScreen';
-import ChatScreen from '../screens/customer/ChatScreen';
-import ProfileScreen from '../screens/customer/ProfileScreen';
-import SearchScreen from '../screens/customer/SearchScreen';
+import BookingScreen       from '../screens/customer/BookingScreen';
+import ChatScreen          from '../screens/customer/ChatScreen';
+import ProfileScreen       from '../screens/customer/ProfileScreen';
+import SearchScreen        from '../screens/customer/SearchScreen';
+
 import WorkerDashboard from '../screens/worker/WorkerDashboard';
-import AdminDashboard from '../screens/admin/AdminDashboard';
+import AdminDashboard  from '../screens/admin/AdminDashboard';
 
 const Stack = createNativeStackNavigator();
 
@@ -30,8 +34,9 @@ const NavigationTheme = {
 };
 
 const AppNavigator = () => {
-  const [userRole, setUserRole] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [showSplash, setShowSplash] = useState(true);
+  const [userRole, setUserRole]     = useState(null);
+  const [loading, setLoading]       = useState(true);
 
   useEffect(() => {
     checkUserStatus();
@@ -40,7 +45,7 @@ const AppNavigator = () => {
   const checkUserStatus = async () => {
     try {
       const role = await AsyncStorage.getItem('userRole');
-      setUserRole(role); // 'CUSTOMER', 'WORKER', 'ADMIN', or null
+      setUserRole(role);
     } catch (e) {
       console.error(e);
     } finally {
@@ -48,40 +53,73 @@ const AppNavigator = () => {
     }
   };
 
-  if (loading) {
-    return null; // Or a Splash Screen component
+  const updateUserRole = async (role) => {
+    try {
+      if (role) {
+        await AsyncStorage.setItem('userRole', role);
+      } else {
+        await AsyncStorage.removeItem('userRole');
+      }
+      setUserRole(role);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  // Show animated splash while loading or during splash animation
+  if (showSplash) {
+    return (
+      <SplashScreen
+        onFinish={() => setShowSplash(false)}
+      />
+    );
   }
 
+  if (loading) return null;
+
   return (
-    <NavigationContainer theme={NavigationTheme}>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {userRole === null ? (
-          // Auth Stack
-          <>
-            <Stack.Screen name="Login" component={LoginScreen} initialParams={{ setUserRole }} />
-            <Stack.Screen name="Signup" component={SignupScreen} initialParams={{ setUserRole }} />
-          </>
-        ) : userRole === 'CUSTOMER' ? (
-          // Customer Stack
-          <>
-            <Stack.Screen name="CustomerHome" component={CustomerHomeScreen} initialParams={{ setUserRole }} />
-            <Stack.Screen name="WorkerDetails" component={WorkerDetailsScreen} />
-            <Stack.Screen name="Booking" component={BookingScreen} />
-            <Stack.Screen name="Chat" component={ChatScreen} />
-            <Stack.Screen name="Profile" component={ProfileScreen} />
-            <Stack.Screen name="Search" component={SearchScreen} />
-          </>
-        ) : userRole === 'WORKER' ? (
-          // Worker Stack
-          <Stack.Screen name="WorkerDashboard" component={WorkerDashboard} initialParams={{ setUserRole }} />
-        ) : userRole === 'ADMIN' ? (
-          // Admin Stack
-          <Stack.Screen name="AdminDashboard" component={AdminDashboard} initialParams={{ setUserRole }} />
-        ) : (
-          <Stack.Screen name="Placeholder" component={CustomerHomeScreen} />
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
+    <AuthContext.Provider value={{ userRole, updateUserRole }}>
+      <NavigationContainer theme={NavigationTheme}>
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false,
+            animation: 'fade',
+          }}
+        >
+          {userRole === null ? (
+            // Not logged in — show landing + auth screens
+            <>
+              <Stack.Screen name="Landing" component={LandingScreen} />
+              <Stack.Screen
+                name="Login"
+                component={LoginScreen}
+                options={{ animation: 'slide_from_right' }}
+              />
+              <Stack.Screen
+                name="Signup"
+                component={SignupScreen}
+                options={{ animation: 'slide_from_right' }}
+              />
+            </>
+          ) : userRole === 'CUSTOMER' ? (
+            <>
+              <Stack.Screen name="CustomerHome"   component={CustomerHomeScreen} />
+              <Stack.Screen name="WorkerDetails"  component={WorkerDetailsScreen} options={{ animation: 'slide_from_right' }} />
+              <Stack.Screen name="Booking"        component={BookingScreen}       options={{ animation: 'slide_from_right' }} />
+              <Stack.Screen name="Chat"           component={ChatScreen}          options={{ animation: 'slide_from_right' }} />
+              <Stack.Screen name="Profile"        component={ProfileScreen}       options={{ animation: 'slide_from_right' }} />
+              <Stack.Screen name="Search"         component={SearchScreen}        options={{ animation: 'slide_from_right' }} />
+            </>
+          ) : userRole === 'WORKER' ? (
+            <Stack.Screen name="WorkerDashboard" component={WorkerDashboard} />
+          ) : userRole === 'ADMIN' ? (
+            <Stack.Screen name="AdminDashboard"  component={AdminDashboard} />
+          ) : (
+            <Stack.Screen name="Landing" component={LandingScreen} />
+          )}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </AuthContext.Provider>
   );
 };
 

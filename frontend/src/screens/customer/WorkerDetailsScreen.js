@@ -1,93 +1,263 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  View, Text, StyleSheet, ScrollView, TouchableOpacity,
+  ActivityIndicator, Animated, Dimensions, StatusBar
+} from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS, SIZES, FONTS } from '../../theme/Theme';
 import GradientButton from '../../components/GradientButton';
 
+const { width } = Dimensions.get('window');
+
+const CAT_ICONS = {
+  Plumber:'🔧', Electrician:'⚡', Painter:'🎨',
+  'AC Repair':'❄️', Carpenter:'🪚', Mechanic:'🔩', Welder:'🔥', Qasai:'🥩',
+};
+
+const InfoRow = ({ icon, label, value }) => (
+  <View style={s.infoRow}>
+    <View style={s.infoIconBox}>
+      <Text style={s.infoIcon}>{icon}</Text>
+    </View>
+    <View style={s.infoContent}>
+      <Text style={s.infoLabel}>{label}</Text>
+      <Text style={s.infoValue}>{value || 'N/A'}</Text>
+    </View>
+  </View>
+);
+
 const WorkerDetailsScreen = ({ navigation, route }) => {
-  // Assuming worker is passed via route.params
-  const { worker } = route.params || { 
-    worker: { name: 'Unknown', category: 'N/A', rating: '0', cnic: 'N/A' } 
-  };
+  const { worker } = route.params || {};
+  const [loading, setLoading]   = useState(false);
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideY   = useRef(new Animated.Value(30)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, { toValue: 1, duration: 400, useNativeDriver: true }),
+      Animated.spring(slideY,   { toValue: 0, useNativeDriver: true, tension: 80, friction: 8 }),
+    ]).start();
+  }, []);
+
+  if (!worker) {
+    return (
+      <View style={s.center}>
+        <Text style={s.errorTxt}>Worker data not found.</Text>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={s.backBtnAlt}>
+          <Text style={s.backBtnAltTxt}>Go Back</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  const initials = worker.name
+    ? worker.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+    : 'W';
+  const catIcon = CAT_ICONS[worker.category] || '👷';
+  const rating  = worker.rating ? Number(worker.rating).toFixed(1) : null;
+  const stars   = rating ? '★'.repeat(Math.floor(rating)) + '☆'.repeat(5 - Math.floor(rating)) : null;
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
-          <Text style={styles.backText}>{'< Back'}</Text>
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Worker Details</Text>
-        <View style={{ width: 50 }} /> {/* Spacer */}
-      </View>
+    <View style={s.root}>
+      <StatusBar barStyle="light-content" backgroundColor="#020810" />
+      <LinearGradient colors={['#020810', '#060E18']} style={StyleSheet.absoluteFill} />
 
-      <View style={styles.profileSection}>
-        <View style={styles.avatar}>
-          <Text style={styles.avatarText}>{worker.name.charAt(0)}</Text>
+      {/* Back button */}
+      <TouchableOpacity style={s.backBtn} onPress={() => navigation.goBack()} activeOpacity={0.8}>
+        <View style={s.backBtnInner}>
+          <Text style={s.backArrow}>←</Text>
+          <Text style={s.backTxt}>Back</Text>
         </View>
-        <Text style={styles.name}>{worker.name}</Text>
-        <Text style={styles.category}>{worker.category}</Text>
-        <Text style={styles.rating}>⭐ {worker.rating}</Text>
-      </View>
+      </TouchableOpacity>
 
-      <View style={styles.infoSection}>
-        <Text style={styles.sectionTitle}>About</Text>
-        <Text style={styles.infoText}>Experienced professional providing reliable {worker.category.toLowerCase()} services.</Text>
-        
-        <Text style={styles.sectionTitle}>Services</Text>
-        <View style={styles.serviceItem}>
-          <Text style={styles.serviceName}>Standard Service</Text>
-          <Text style={styles.servicePrice}>Rs. 1500</Text>
-        </View>
-      </View>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
+        <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: slideY }] }}>
 
-      <View style={styles.actions}>
-        <GradientButton 
-          title="Book Now" 
-          onPress={() => navigation.navigate('Booking', { worker })} 
-        />
-        <TouchableOpacity 
-          style={styles.chatBtn} 
-          onPress={() => navigation.navigate('Chat', { worker })}
-        >
-          <Text style={styles.chatText}>Send Message</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+          {/* Hero card */}
+          <LinearGradient colors={['#0A1E32', '#0C2540']} style={s.hero}>
+            <LinearGradient colors={['#00D2FF15', 'transparent']} style={StyleSheet.absoluteFill} />
+
+            {/* Avatar */}
+            <LinearGradient colors={['#00D2FF', '#3A7BD5']} style={s.avatar}>
+              <Text style={s.avatarTxt}>{initials}</Text>
+            </LinearGradient>
+
+            <Text style={s.name}>{worker.name}</Text>
+
+            {/* Category badge */}
+            <View style={s.catBadge}>
+              <Text style={s.catIcon}>{catIcon}</Text>
+              <Text style={s.catTxt}>{worker.category}</Text>
+            </View>
+
+            {/* Rating */}
+            {rating ? (
+              <View style={s.ratingRow}>
+                <Text style={s.ratingStars}>{stars}</Text>
+                <Text style={s.ratingNum}>{rating}</Text>
+              </View>
+            ) : (
+              <View style={s.newBadge}>
+                <Text style={s.newBadgeTxt}>NEW WORKER</Text>
+              </View>
+            )}
+
+            {/* Status badge */}
+            {worker.approvalStatus && (
+              <View style={[s.statusBadge, {
+                backgroundColor: worker.approvalStatus === 'APPROVED' ? '#00E67618' : '#FFC10718',
+                borderColor:     worker.approvalStatus === 'APPROVED' ? '#00E67650' : '#FFC10750',
+              }]}>
+                <Text style={[s.statusTxt, {
+                  color: worker.approvalStatus === 'APPROVED' ? '#00E676' : '#FFC107'
+                }]}>
+                  {worker.approvalStatus === 'APPROVED' ? '✓ Verified Worker' : 'Pending Approval'}
+                </Text>
+              </View>
+            )}
+
+            {/* City */}
+            {worker.city ? <Text style={s.cityTxt}>📍 {worker.city}</Text> : null}
+          </LinearGradient>
+
+          {/* Info section */}
+          <View style={s.section}>
+            <Text style={s.sectionTitle}>CONTACT INFO</Text>
+            <InfoRow icon="📞" label="Phone"    value={worker.phone} />
+            <InfoRow icon="💬" label="WhatsApp" value={worker.whatsapp} />
+            <InfoRow icon="📧" label="Email"    value={worker.email} />
+          </View>
+
+          <View style={s.section}>
+            <Text style={s.sectionTitle}>PROFESSIONAL INFO</Text>
+            <InfoRow icon={catIcon} label="Category" value={worker.category} />
+            <InfoRow icon="🪪"      label="CNIC"     value={worker.cnic} />
+            <InfoRow icon="📍"      label="City"     value={worker.city} />
+          </View>
+
+          {/* About */}
+          <View style={s.section}>
+            <Text style={s.sectionTitle}>ABOUT</Text>
+            <View style={s.aboutCard}>
+              <Text style={s.aboutTxt}>
+                {worker.name} is an experienced {worker.category?.toLowerCase()} professional
+                {worker.city ? ` based in ${worker.city}` : ''}.
+                {worker.approvalStatus === 'APPROVED'
+                  ? ' Verified and approved by HunarHub.'
+                  : ' Currently pending verification.'}
+              </Text>
+            </View>
+          </View>
+
+          {/* Standard service */}
+          <View style={s.section}>
+            <Text style={s.sectionTitle}>SERVICES</Text>
+            <View style={s.serviceCard}>
+              <View style={s.serviceRow}>
+                <Text style={s.serviceName}>Standard Service</Text>
+                <Text style={s.servicePrice}>Rs. 1,500</Text>
+              </View>
+              <View style={s.serviceRow}>
+                <Text style={s.serviceName}>Emergency / Urgent</Text>
+                <Text style={[s.servicePrice, { color: '#FF4C4C' }]}>Rs. 2,500</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* Action buttons */}
+          <View style={s.actions}>
+            <GradientButton
+              title="Book Now"
+              onPress={() => navigation.navigate('Booking', { worker })}
+              style={{ marginBottom: SIZES.base }}
+            />
+            <TouchableOpacity
+              style={s.chatBtn}
+              onPress={() => navigation.navigate('Chat', { worker })}
+              activeOpacity={0.8}
+            >
+              <Text style={s.chatTxt}>Send Message</Text>
+            </TouchableOpacity>
+          </View>
+
+        </Animated.View>
+      </ScrollView>
+    </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.background },
-  header: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    padding: SIZES.padding, paddingTop: SIZES.extraLarge * 2, backgroundColor: COLORS.card,
+const s = StyleSheet.create({
+  root:   { flex: 1, backgroundColor: '#060E18' },
+  center: { flex: 1, backgroundColor: '#060E18', justifyContent: 'center', alignItems: 'center' },
+  errorTxt: { color: '#5A7A90', fontSize: 16, marginBottom: 16 },
+  backBtnAlt: { paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12, borderWidth: 1, borderColor: '#00D2FF40' },
+  backBtnAltTxt: { color: '#00D2FF', fontWeight: '700' },
+
+  backBtn: { position: 'absolute', top: SIZES.extraLarge * 1.8, left: SIZES.padding, zIndex: 10 },
+  backBtnInner: {
+    flexDirection: 'row', alignItems: 'center',
+    backgroundColor: 'rgba(0,210,255,0.1)', borderWidth: 1,
+    borderColor: 'rgba(0,210,255,0.25)', borderRadius: 20,
+    paddingHorizontal: 14, paddingVertical: 7,
   },
-  backBtn: { padding: SIZES.small },
-  backText: { ...FONTS.body, color: COLORS.primary },
-  headerTitle: { ...FONTS.large, color: COLORS.text, fontWeight: 'bold' },
-  profileSection: { alignItems: 'center', padding: SIZES.extraLarge, backgroundColor: COLORS.card, marginBottom: SIZES.base },
+  backArrow: { color: '#00D2FF', fontSize: 16, marginRight: 5, fontWeight: 'bold' },
+  backTxt:   { color: '#00D2FF', fontSize: 13, fontWeight: '600' },
+
+  scroll: { paddingTop: SIZES.extraLarge * 3.5, paddingBottom: 40 },
+
+  // Hero
+  hero: {
+    marginHorizontal: SIZES.padding, borderRadius: 24,
+    borderWidth: 1, borderColor: '#0C2540',
+    padding: SIZES.padding + 4, alignItems: 'center',
+    marginBottom: SIZES.base, overflow: 'hidden',
+  },
   avatar: {
-    width: 100, height: 100, borderRadius: 50, backgroundColor: COLORS.secondary,
-    justifyContent: 'center', alignItems: 'center', marginBottom: SIZES.base,
+    width: 90, height: 90, borderRadius: 45,
+    justifyContent: 'center', alignItems: 'center',
+    marginBottom: 14,
+    shadowColor: '#00D2FF', shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.5, shadowRadius: 15, elevation: 12,
   },
-  avatarText: { fontSize: 40, color: '#FFF', fontWeight: 'bold' },
-  name: { ...FONTS.title, color: COLORS.text, marginBottom: 4 },
-  category: { ...FONTS.large, color: COLORS.primary, marginBottom: 8 },
-  rating: { ...FONTS.body, color: COLORS.warning },
-  infoSection: { padding: SIZES.padding, backgroundColor: COLORS.card },
-  sectionTitle: { ...FONTS.large, color: COLORS.text, fontWeight: 'bold', marginBottom: SIZES.small, marginTop: SIZES.base },
-  infoText: { ...FONTS.body, color: COLORS.textSecondary, lineHeight: 22 },
-  serviceItem: {
-    flexDirection: 'row', justifyContent: 'space-between', paddingVertical: SIZES.small,
-    borderBottomWidth: 1, borderBottomColor: COLORS.border,
-  },
-  serviceName: { ...FONTS.body, color: COLORS.text },
-  servicePrice: { ...FONTS.body, color: COLORS.success, fontWeight: 'bold' },
-  actions: { padding: SIZES.padding, marginTop: SIZES.extraLarge },
+  avatarTxt:  { fontSize: 34, fontWeight: '900', color: '#FFF' },
+  name:       { fontSize: 24, fontWeight: '800', color: '#D8EAF8', marginBottom: 10 },
+  catBadge:   { flexDirection: 'row', alignItems: 'center', backgroundColor: '#00D2FF15', borderRadius: 20, borderWidth: 1, borderColor: '#00D2FF30', paddingHorizontal: 14, paddingVertical: 6, marginBottom: 10 },
+  catIcon:    { fontSize: 16, marginRight: 6 },
+  catTxt:     { color: '#00D2FF', fontWeight: '700', fontSize: 14 },
+  ratingRow:  { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
+  ratingStars:{ color: '#FFC107', fontSize: 18, marginRight: 6 },
+  ratingNum:  { color: '#FFC107', fontWeight: '800', fontSize: 18 },
+  newBadge:   { backgroundColor: '#00E67615', borderRadius: 10, borderWidth: 1, borderColor: '#00E67640', paddingHorizontal: 12, paddingVertical: 4, marginBottom: 10 },
+  newBadgeTxt:{ color: '#00E676', fontSize: 11, fontWeight: '700', letterSpacing: 1 },
+  statusBadge:{ borderRadius: 10, borderWidth: 1, paddingHorizontal: 14, paddingVertical: 5, marginBottom: 8 },
+  statusTxt:  { fontSize: 13, fontWeight: '700' },
+  cityTxt:    { color: '#3A5568', fontSize: 13, marginTop: 4 },
+
+  // Sections
+  section:      { marginHorizontal: SIZES.padding, marginBottom: SIZES.base },
+  sectionTitle: { fontSize: 11, color: '#243545', fontWeight: '800', letterSpacing: 2, marginBottom: 10, marginTop: 8 },
+
+  infoRow:     { flexDirection: 'row', alignItems: 'center', backgroundColor: '#0B1825', borderRadius: 14, borderWidth: 1, borderColor: '#162535', padding: 14, marginBottom: 8 },
+  infoIconBox: { width: 40, height: 40, borderRadius: 12, backgroundColor: '#00D2FF12', borderWidth: 1, borderColor: '#00D2FF25', justifyContent: 'center', alignItems: 'center', marginRight: 14 },
+  infoIcon:    { fontSize: 18 },
+  infoContent: { flex: 1 },
+  infoLabel:   { fontSize: 11, color: '#3A5568', fontWeight: '600', letterSpacing: 0.5, marginBottom: 2 },
+  infoValue:   { fontSize: 15, color: '#C8D8E8', fontWeight: '600' },
+
+  aboutCard: { backgroundColor: '#0B1825', borderRadius: 14, borderWidth: 1, borderColor: '#162535', padding: 16 },
+  aboutTxt:  { fontSize: 14, color: '#5A7A90', lineHeight: 22 },
+
+  serviceCard: { backgroundColor: '#0B1825', borderRadius: 14, borderWidth: 1, borderColor: '#162535', overflow: 'hidden' },
+  serviceRow:  { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: '#162535' },
+  serviceName: { fontSize: 14, color: '#C8D8E8', fontWeight: '600' },
+  servicePrice:{ fontSize: 15, color: '#00E676', fontWeight: '800' },
+
+  actions: { marginHorizontal: SIZES.padding, marginTop: SIZES.base },
   chatBtn: {
-    marginTop: SIZES.base, padding: SIZES.padding, borderRadius: SIZES.radius,
-    borderWidth: 1, borderColor: COLORS.primary, alignItems: 'center',
+    borderWidth: 1.5, borderColor: '#00D2FF40', borderRadius: SIZES.radius,
+    padding: SIZES.padding, alignItems: 'center', backgroundColor: '#00D2FF08',
   },
-  chatText: { ...FONTS.large, color: COLORS.primary, fontWeight: 'bold' },
+  chatTxt: { color: '#00D2FF', fontWeight: '700', fontSize: 16 },
 });
 
 export default WorkerDetailsScreen;

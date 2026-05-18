@@ -18,6 +18,7 @@ public class UserDAO {
             if (rs.next()) {
                 // Using an anonymous subclass for instantiation just for basic user details, 
                 // typically we'd return a specific Worker/Customer/Admin
+                final String role = rs.getString("role");
                 return new User(
                     rs.getInt("id"),
                     rs.getString("name"),
@@ -26,11 +27,11 @@ public class UserDAO {
                     rs.getString("phone"),
                     rs.getDate("dob"),
                     rs.getString("city"),
-                    rs.getString("role")
+                    role
                 ) {
                     @Override
                     public String getRoleDescription() {
-                        return rs.getString("role");
+                        return role;
                     }
                 };
             }

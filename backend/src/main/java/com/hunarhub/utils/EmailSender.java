@@ -13,6 +13,12 @@ public class EmailSender {
     private static final String EMAIL_PASSWORD = "your_app_password"; 
 
     public static void sendEmail(String toEmail, String subject, String body) {
+        // Skip silently if credentials are not configured
+        if (EMAIL_USERNAME.contains("your_email") || EMAIL_PASSWORD.contains("your_app_password")) {
+            System.out.println("[EmailSender] Skipping email (credentials not configured) to: " + toEmail);
+            return;
+        }
+
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
@@ -37,8 +43,8 @@ public class EmailSender {
             System.out.println("Email sent successfully to: " + toEmail);
 
         } catch (MessagingException e) {
-            e.printStackTrace();
-            System.err.println("Failed to send email to: " + toEmail);
+            // Log but never crash the caller — email is non-critical
+            System.err.println("Failed to send email to: " + toEmail + " — " + e.getMessage());
         }
     }
 }
