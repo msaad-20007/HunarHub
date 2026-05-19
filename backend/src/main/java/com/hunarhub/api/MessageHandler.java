@@ -94,7 +94,7 @@ public class MessageHandler implements HttpHandler {
     // POST /api/messages  body: { senderId, receiverId, text }
     private void handlePost(HttpExchange ex) throws IOException {
         try (InputStream is = ex.getRequestBody()) {
-            String body = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+            String body = com.hunarhub.utils.IOUtils.readString(is);
             JSONObject json = new JSONObject(body);
             int    senderId   = json.getInt("senderId");
             int    receiverId = json.getInt("receiverId");

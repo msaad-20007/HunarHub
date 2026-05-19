@@ -36,7 +36,7 @@ public class UserHandler implements HttpHandler {
 
     private String getRequestBody(HttpExchange exchange) throws IOException {
         try (InputStream is = exchange.getRequestBody()) {
-            return new String(is.readAllBytes(), StandardCharsets.UTF_8);
+            return com.hunarhub.utils.IOUtils.readString(is);
         }
     }
 

@@ -38,8 +38,9 @@ public class AuthHandler {
     }
 
     private static String getRequestBody(HttpExchange exchange) throws IOException {
-        InputStream is = exchange.getRequestBody();
-        return new String(is.readAllBytes(), StandardCharsets.UTF_8);
+        try (InputStream is = exchange.getRequestBody()) {
+            return com.hunarhub.utils.IOUtils.readString(is);
+        }
     }
 
     public static class RegisterHandler implements HttpHandler {
