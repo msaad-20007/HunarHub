@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const BASE_URL = 'http://192.168.100.5:8080/api'; // PC IPv4 address
+const BASE_URL = 'http://192.168.100.8:8080/api'; // PC IPv4 address
 
 export const apiCall = async (endpoint, method = 'GET', body = null) => {
   try {
@@ -20,8 +20,11 @@ export const apiCall = async (endpoint, method = 'GET', body = null) => {
 };
 
 export const authAPI = {
-  login:    (credentials) => apiCall('/auth/login',    'POST', credentials),
-  register: (userData)    => apiCall('/auth/register', 'POST', userData),
+  login:           (credentials) => apiCall('/auth/login',           'POST', credentials),
+  register:        (userData)    => apiCall('/auth/register',        'POST', userData),
+  forgotPassword:  (email)       => apiCall('/auth/forgot-password', 'POST', { email }),
+  verifyOtp:       (email, otp)  => apiCall('/auth/verify-otp',      'POST', { email, otp }),
+  resetPassword:   (email, newPassword) => apiCall('/auth/reset-password', 'POST', { email, newPassword }),
 };
 
 export const workerAPI = {

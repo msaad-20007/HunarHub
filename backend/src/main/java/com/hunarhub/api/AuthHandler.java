@@ -7,6 +7,7 @@ import com.hunarhub.models.User;
 import com.hunarhub.models.Worker;
 import com.hunarhub.models.Customer;
 import com.hunarhub.utils.EmailSender;
+import com.hunarhub.utils.OtpStore;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import org.json.JSONObject;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 
 public class AuthHandler {
 
@@ -152,6 +154,125 @@ public class AuthHandler {
             } catch (Exception e) {
                 e.printStackTrace();
                 sendResponse(exchange, 400, "{\"error\": \"Invalid request format\"}");
+            }
+        }
+    }
+
+    // ── POST /api/auth/forgot-password  { email } ─────────────────────────────
+    public static class ForgotPasswordHandler implements HttpHandler {
+        private static final SecureRandom rng = new SecureRandom();
+
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+            if (exchange.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
+                sendResponse(exchange, 204, ""); return;
+            }
+            if (!"POST".equals(exchange.getRequestMethod())) {
+                sendResponse(exchange, 405, "{\"error\":\"Method not allowed\"}"); return;
+            }
+            try {
+                JSONObject json  = new JSONObject(getRequestBody(exchange));
+                String     email = json.getString("email").trim().toLowerCase();
+
+                UserDAO userDAO = new UserDAO();
+                User    user    = userDAO.getUserByEmail(email);
+
+                // Always return 200 to avoid email enumeration
+                if (user == null) {
+                    sendResponse(exchange, 200, "{\"message\":\"If that email exists, a code has been sent.\"}");
+                    return;
+                }
+
+                // Generate 6-digit OTP
+                String otp = String.format("%06d", rng.nextInt(1_000_000));
+                OtpStore.put(email, otp);
+
+                // Send email (non-fatal)
+                try {
+                    EmailSender.sendPasswordResetOtp(email, user.getName(), otp);
+                } catch (Exception ex) {
+                    System.err.println("OTP email failed: " + ex.getMessage());
+                }
+
+                sendResponse(exchange, 200, "{\"message\":\"If that email exists, a code has been sent.\"}");
+            } catch (Exception e) {
+                e.printStackTrace();
+                sendResponse(exchange, 400, "{\"error\":\"Invalid request\"}");
+            }
+        }
+    }
+
+    // ── POST /api/auth/verify-otp  { email, otp } ────────────────────────────
+    public static class VerifyOtpHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+            if (exchange.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
+                sendResponse(exchange, 204, ""); return;
+            }
+            if (!"POST".equals(exchange.getRequestMethod())) {
+                sendResponse(exchange, 405, "{\"error\":\"Method not allowed\"}"); return;
+            }
+            try {
+                JSONObject json  = new JSONObject(getRequestBody(exchange));
+                String     email = json.getString("email").trim().toLowerCase();
+                String     otp   = json.getString("otp").trim();
+
+                if (OtpStore.verify(email, otp)) {
+                    // Mark email as verified so reset-password can proceed
+                    OtpStore.put(email, "VERIFIED");
+                    sendResponse(exchange, 200, "{\"message\":\"OTP verified\"}");
+                } else {
+                    sendResponse(exchange, 400, "{\"error\":\"Invalid or expired code\"}");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                sendResponse(exchange, 400, "{\"error\":\"Invalid request\"}");
+            }
+        }
+    }
+
+    // ── POST /api/auth/reset-password  { email, newPassword } ────────────────
+    public static class ResetPasswordHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+            if (exchange.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
+                sendResponse(exchange, 204, ""); return;
+            }
+            if (!"POST".equals(exchange.getRequestMethod())) {
+                sendResponse(exchange, 405, "{\"error\":\"Method not allowed\"}"); return;
+            }
+            try {
+                JSONObject json        = new JSONObject(getRequestBody(exchange));
+                String     email       = json.getString("email").trim().toLowerCase();
+                String     newPassword = json.getString("newPassword").trim();
+
+                if (newPassword.length() < 6) {
+                    sendResponse(exchange, 400, "{\"error\":\"Password must be at least 6 characters\"}");
+                    return;
+                }
+
+                // Must have a VERIFIED token
+                if (!OtpStore.verify(email, "VERIFIED")) {
+                    sendResponse(exchange, 403, "{\"error\":\"Please verify your OTP first\"}");
+                    return;
+                }
+
+                // Update password in DB
+                try (java.sql.Connection conn = com.hunarhub.db.DatabaseConnection.getConnection()) {
+                    java.sql.PreparedStatement ps = conn.prepareStatement(
+                        "UPDATE users SET password = ? WHERE LOWER(email) = ?");
+                    ps.setString(1, newPassword);
+                    ps.setString(2, email);
+                    int rows = ps.executeUpdate();
+                    if (rows > 0) {
+                        sendResponse(exchange, 200, "{\"message\":\"Password reset successfully\"}");
+                    } else {
+                        sendResponse(exchange, 404, "{\"error\":\"User not found\"}");
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                sendResponse(exchange, 400, "{\"error\":\"Invalid request\"}");
             }
         }
     }

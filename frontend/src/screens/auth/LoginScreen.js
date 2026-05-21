@@ -99,6 +99,17 @@ const LoginScreen = ({ navigation }) => {
               onPress={handleLogin}
               style={{ marginTop: SIZES.large }}
             />
+
+            {/* Forgot password */}
+            <TouchableOpacity
+              onPress={() => navigation.navigate('ForgotPassword')}
+              style={{ alignItems: 'center', marginTop: SIZES.padding }}
+              activeOpacity={0.7}
+            >
+              <Text style={{ fontSize: 13, color: COLORS.primary, fontWeight: '600' }}>
+                Forgot Password?
+              </Text>
+            </TouchableOpacity>
           </View>
 
           {/* Switch to signup */}

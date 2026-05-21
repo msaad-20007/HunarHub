@@ -236,6 +236,24 @@ public class EmailSender {
         send(toEmail, "Job Completed — Please Rate " + workerName + " ⭐", wrap("#3A7BD5", "🏆", "Completed", body));
     }
 
+    // ── 9. Forgot Password OTP ────────────────────────────────────────────────
+    public static void sendPasswordResetOtp(String toEmail, String name, String otp) {
+        String body =
+            "<p class='greeting'>Password Reset Request 🔐</p>" +
+            "<p class='text'>Hello <span class='highlight'>" + name + "</span>, " +
+            "we received a request to reset your <span class='highlight'>HunarHub</span> password.</p>" +
+            "<div class='divider'></div>" +
+            "<div class='otp-box'>" +
+            "  <div class='otp-label'>YOUR VERIFICATION CODE</div>" +
+            "  <div class='otp-code'>" + otp + "</div>" +
+            "  <div class='otp-expire'>⏱ Expires in 10 minutes</div>" +
+            "</div>" +
+            "<p class='text'>Enter this code in the app to reset your password. " +
+            "If you did not request a password reset, you can safely ignore this email — " +
+            "your account remains secure.</p>";
+        send(toEmail, "HunarHub — Password Reset Code: " + otp, wrap("#FF6B35", "🔐", "Reset Password", body));
+    }
+
     // ── Legacy plain-text fallback (keeps old callers working) ───────────────
     public static void sendEmail(String toEmail, String subject, String body) {
         send(toEmail, subject, wrap("#00D2FF", "🔧", subject,

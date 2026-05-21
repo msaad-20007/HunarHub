@@ -9,6 +9,7 @@ import SplashScreen  from '../screens/SplashScreen';
 import LandingScreen from '../screens/LandingScreen';
 import LoginScreen   from '../screens/auth/LoginScreen';
 import SignupScreen  from '../screens/auth/SignupScreen';
+import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
 
 import CustomerHomeScreen  from '../screens/customer/HomeScreen';
 import WorkerDetailsScreen from '../screens/customer/WorkerDetailsScreen';
@@ -98,6 +99,11 @@ const AppNavigator = () => {
               <Stack.Screen
                 name="Signup"
                 component={SignupScreen}
+                options={{ animation: 'slide_from_right' }}
+              />
+              <Stack.Screen
+                name="ForgotPassword"
+                component={ForgotPasswordScreen}
                 options={{ animation: 'slide_from_right' }}
               />
             </>

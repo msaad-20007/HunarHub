@@ -28,8 +28,11 @@ public class Main {
             HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
 
             // ── Auth ──────────────────────────────────────────────────────────
-            server.createContext("/api/auth/register", new AuthHandler.RegisterHandler());
-            server.createContext("/api/auth/login",    new AuthHandler.LoginHandler());
+            server.createContext("/api/auth/register",       new AuthHandler.RegisterHandler());
+            server.createContext("/api/auth/login",          new AuthHandler.LoginHandler());
+            server.createContext("/api/auth/forgot-password",new AuthHandler.ForgotPasswordHandler());
+            server.createContext("/api/auth/verify-otp",     new AuthHandler.VerifyOtpHandler());
+            server.createContext("/api/auth/reset-password", new AuthHandler.ResetPasswordHandler());
 
             // ── Workers ───────────────────────────────────────────────────────
             // /api/workers prefix-matches /api/workers and /api/workers/{id}
