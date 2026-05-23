@@ -1,30 +1,25 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SIZES, FONTS } from '../theme/Theme';
 
-const CATEGORY_ICONS = {
-  'Plumber': '🔧',
-  'Electrician': '⚡',
-  'Painter': '🎨',
-  'AC Repair': '❄️',
-  'Carpenter': '🪚',
-  'Mechanic': '🔩',
-  'Welder': '🔥',
-  'Qasai': '🥩',
+const CAT_ICONS = {
+  'Plumber':     'build-outline',
+  'Electrician': 'flash-outline',
+  'Painter':     'color-palette-outline',
+  'AC Repair':   'snow-outline',
+  'Carpenter':   'hammer-outline',
+  'Mechanic':    'settings-outline',
+  'Welder':      'flame-outline',
+  'Qasai':       'restaurant-outline',
 };
 
 const WorkerCard = ({ worker, onPress }) => {
-  const icon = CATEGORY_ICONS[worker.category] || '👷';
+  const iconName = CAT_ICONS[worker.category] || 'construct-outline';
   const initials = worker.name
     ? worker.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
     : 'W';
-
-  const renderStars = (rating) => {
-    if (!rating) return null;
-    const full = Math.floor(rating);
-    const stars = '★'.repeat(full) + '☆'.repeat(5 - full);
-    return stars;
-  };
+  const rating = worker.rating ? Number(worker.rating) : 0;
 
   return (
     <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.75}>
@@ -37,20 +32,32 @@ const WorkerCard = ({ worker, onPress }) => {
       <View style={styles.info}>
         <Text style={styles.name}>{worker.name}</Text>
         <View style={styles.categoryRow}>
-          <Text style={styles.categoryIcon}>{icon}</Text>
+          <Ionicons name={iconName} size={13} color={COLORS.primary} style={{ marginRight: 4 }} />
           <Text style={styles.category}>{worker.category}</Text>
         </View>
-        {worker.city && (
-          <Text style={styles.city}>📍 {worker.city}</Text>
-        )}
+        {worker.city ? (
+          <View style={styles.cityRow}>
+            <Ionicons name="location-outline" size={12} color={COLORS.textSecondary} style={{ marginRight: 3 }} />
+            <Text style={styles.city}>{worker.city}</Text>
+          </View>
+        ) : null}
       </View>
 
       {/* Right side */}
       <View style={styles.right}>
-        {worker.rating ? (
+        {rating > 0 ? (
           <>
-            <Text style={styles.ratingNumber}>{Number(worker.rating).toFixed(1)}</Text>
-            <Text style={styles.stars}>{renderStars(worker.rating)}</Text>
+            <Text style={styles.ratingNumber}>{rating.toFixed(1)}</Text>
+            <View style={styles.starsRow}>
+              {[1,2,3,4,5].map(i => (
+                <Ionicons
+                  key={i}
+                  name={i <= Math.floor(rating) ? 'star' : 'star-outline'}
+                  size={10}
+                  color={COLORS.warning}
+                />
+              ))}
+            </View>
           </>
         ) : (
           <View style={styles.newBadge}>
@@ -84,90 +91,34 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   avatar: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
+    width: 52, height: 52, borderRadius: 26,
     backgroundColor: COLORS.secondary,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'center', alignItems: 'center',
     marginRight: SIZES.small,
-    borderWidth: 2,
-    borderColor: COLORS.primary,
+    borderWidth: 2, borderColor: COLORS.primary,
   },
-  avatarText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#FFF',
-  },
-  info: {
-    flex: 1,
-  },
-  name: {
-    ...FONTS.large,
-    color: COLORS.text,
-    fontWeight: 'bold',
-  },
-  categoryRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 3,
-  },
-  categoryIcon: {
-    fontSize: 13,
-    marginRight: 4,
-  },
-  category: {
-    ...FONTS.body,
-    color: COLORS.primary,
-  },
-  city: {
-    ...FONTS.small,
-    color: COLORS.textSecondary,
-    marginTop: 3,
-  },
-  right: {
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-    minWidth: 50,
-  },
-  ratingNumber: {
-    ...FONTS.large,
-    color: COLORS.warning,
-    fontWeight: 'bold',
-  },
-  stars: {
-    color: COLORS.warning,
-    fontSize: 11,
-    marginTop: 2,
-  },
+  avatarText: { fontSize: 18, fontWeight: 'bold', color: '#FFF' },
+  info: { flex: 1 },
+  name: { ...FONTS.large, color: COLORS.text, fontWeight: 'bold' },
+  categoryRow: { flexDirection: 'row', alignItems: 'center', marginTop: 3 },
+  category: { ...FONTS.body, color: COLORS.primary },
+  cityRow: { flexDirection: 'row', alignItems: 'center', marginTop: 3 },
+  city: { ...FONTS.small, color: COLORS.textSecondary },
+  right: { alignItems: 'flex-end', justifyContent: 'center', minWidth: 50 },
+  ratingNumber: { ...FONTS.large, color: COLORS.warning, fontWeight: 'bold' },
+  starsRow: { flexDirection: 'row', marginTop: 2 },
   newBadge: {
-    backgroundColor: 'rgba(0, 230, 118, 0.15)',
-    borderRadius: 6,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderWidth: 1,
-    borderColor: COLORS.success,
+    backgroundColor: 'rgba(0,230,118,0.15)', borderRadius: 6,
+    paddingHorizontal: 8, paddingVertical: 3,
+    borderWidth: 1, borderColor: COLORS.success,
   },
-  newBadgeText: {
-    ...FONTS.small,
-    color: COLORS.success,
-    fontWeight: 'bold',
-    fontSize: 10,
-  },
+  newBadgeText: { ...FONTS.small, color: COLORS.success, fontWeight: 'bold', fontSize: 10 },
   pendingBadge: {
-    backgroundColor: 'rgba(255, 193, 7, 0.15)',
-    borderRadius: 6,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    marginTop: 4,
-    borderWidth: 1,
-    borderColor: COLORS.warning,
+    backgroundColor: 'rgba(255,193,7,0.15)', borderRadius: 6,
+    paddingHorizontal: 6, paddingVertical: 2, marginTop: 4,
+    borderWidth: 1, borderColor: COLORS.warning,
   },
-  pendingText: {
-    fontSize: 9,
-    color: COLORS.warning,
-    fontWeight: 'bold',
-  },
+  pendingText: { fontSize: 9, color: COLORS.warning, fontWeight: 'bold' },
 });
 
 export default WorkerCard;

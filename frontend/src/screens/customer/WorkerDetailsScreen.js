@@ -1,23 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {
-  View, Text, StyleSheet, ScrollView, TouchableOpacity,
-  ActivityIndicator, Animated, Dimensions, StatusBar
-} from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Animated, Dimensions, StatusBar } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SIZES, FONTS } from '../../theme/Theme';
 import GradientButton from '../../components/GradientButton';
 
 const { width } = Dimensions.get('window');
 
 const CAT_ICONS = {
-  Plumber:'🔧', Electrician:'⚡', Painter:'🎨',
-  'AC Repair':'❄️', Carpenter:'🪚', Mechanic:'🔩', Welder:'🔥', Qasai:'🥩',
+  Plumber: 'build-outline', Electrician: 'flash-outline', Painter: 'color-palette-outline',
+  'AC Repair': 'snow-outline', Carpenter: 'hammer-outline', Mechanic: 'settings-outline',
+  Welder: 'flame-outline', Qasai: 'restaurant-outline',
 };
 
-const InfoRow = ({ icon, label, value }) => (
+const InfoRow = ({ iconName, label, value }) => (
   <View style={s.infoRow}>
     <View style={s.infoIconBox}>
-      <Text style={s.infoIcon}>{icon}</Text>
+      <Ionicons name={iconName} size={20} color="#00D2FF" />
     </View>
     <View style={s.infoContent}>
       <Text style={s.infoLabel}>{label}</Text>
@@ -28,7 +27,6 @@ const InfoRow = ({ icon, label, value }) => (
 
 const WorkerDetailsScreen = ({ navigation, route }) => {
   const { worker } = route.params || {};
-  const [loading, setLoading]   = useState(false);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideY   = useRef(new Animated.Value(30)).current;
 
@@ -50,22 +48,19 @@ const WorkerDetailsScreen = ({ navigation, route }) => {
     );
   }
 
-  const initials = worker.name
-    ? worker.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
-    : 'W';
-  const catIcon = CAT_ICONS[worker.category] || '👷';
-  const rating  = worker.rating ? Number(worker.rating).toFixed(1) : null;
-  const stars   = rating ? '★'.repeat(Math.floor(rating)) + '☆'.repeat(5 - Math.floor(rating)) : null;
+  const initials   = worker.name ? worker.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) : 'W';
+  const catIcon    = CAT_ICONS[worker.category] || 'construct-outline';
+  const rating     = worker.rating ? Number(worker.rating) : 0;
+  const isApproved = worker.approvalStatus === 'APPROVED';
 
   return (
     <View style={s.root}>
       <StatusBar barStyle="light-content" backgroundColor="#020810" />
       <LinearGradient colors={['#020810', '#060E18']} style={StyleSheet.absoluteFill} />
 
-      {/* Back button */}
       <TouchableOpacity style={s.backBtn} onPress={() => navigation.goBack()} activeOpacity={0.8}>
         <View style={s.backBtnInner}>
-          <Text style={s.backArrow}>←</Text>
+          <Ionicons name="chevron-back" size={18} color="#00D2FF" />
           <Text style={s.backTxt}>Back</Text>
         </View>
       </TouchableOpacity>
@@ -73,66 +68,71 @@ const WorkerDetailsScreen = ({ navigation, route }) => {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
         <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: slideY }] }}>
 
-          {/* Hero card */}
+          {/* Hero */}
           <LinearGradient colors={['#0A1E32', '#0C2540']} style={s.hero}>
             <LinearGradient colors={['#00D2FF15', 'transparent']} style={StyleSheet.absoluteFill} />
-
-            {/* Avatar */}
             <LinearGradient colors={['#00D2FF', '#3A7BD5']} style={s.avatar}>
               <Text style={s.avatarTxt}>{initials}</Text>
             </LinearGradient>
-
             <Text style={s.name}>{worker.name}</Text>
 
             {/* Category badge */}
             <View style={s.catBadge}>
-              <Text style={s.catIcon}>{catIcon}</Text>
+              <Ionicons name={catIcon} size={16} color="#00D2FF" style={{ marginRight: 6 }} />
               <Text style={s.catTxt}>{worker.category}</Text>
             </View>
 
             {/* Rating */}
-            {rating ? (
+            {rating > 0 ? (
               <View style={s.ratingRow}>
-                <Text style={s.ratingStars}>{stars}</Text>
-                <Text style={s.ratingNum}>{rating}</Text>
+                {[1,2,3,4,5].map(i => (
+                  <Ionicons key={i} name={i <= Math.floor(rating) ? 'star' : 'star-outline'} size={18} color="#FFC107" />
+                ))}
+                <Text style={s.ratingNum}>{rating.toFixed(1)}</Text>
               </View>
             ) : (
-              <View style={s.newBadge}>
-                <Text style={s.newBadgeTxt}>NEW WORKER</Text>
-              </View>
+              <View style={s.newBadge}><Text style={s.newBadgeTxt}>NEW WORKER</Text></View>
             )}
 
-            {/* Status badge */}
+            {/* Status */}
             {worker.approvalStatus && (
               <View style={[s.statusBadge, {
-                backgroundColor: worker.approvalStatus === 'APPROVED' ? '#00E67618' : '#FFC10718',
-                borderColor:     worker.approvalStatus === 'APPROVED' ? '#00E67650' : '#FFC10750',
+                backgroundColor: isApproved ? '#00E67618' : '#FFC10718',
+                borderColor:     isApproved ? '#00E67650' : '#FFC10750',
               }]}>
-                <Text style={[s.statusTxt, {
-                  color: worker.approvalStatus === 'APPROVED' ? '#00E676' : '#FFC107'
-                }]}>
-                  {worker.approvalStatus === 'APPROVED' ? '✓ Verified Worker' : 'Pending Approval'}
+                <Ionicons
+                  name={isApproved ? 'shield-checkmark-outline' : 'time-outline'}
+                  size={13} color={isApproved ? '#00E676' : '#FFC107'}
+                  style={{ marginRight: 5 }}
+                />
+                <Text style={[s.statusTxt, { color: isApproved ? '#00E676' : '#FFC107' }]}>
+                  {isApproved ? 'Verified Worker' : 'Pending Approval'}
                 </Text>
               </View>
             )}
 
-            {/* City */}
-            {worker.city ? <Text style={s.cityTxt}>📍 {worker.city}</Text> : null}
+            {worker.city ? (
+              <View style={s.cityRow}>
+                <Ionicons name="location-outline" size={13} color="#3A5568" style={{ marginRight: 4 }} />
+                <Text style={s.cityTxt}>{worker.city}</Text>
+              </View>
+            ) : null}
           </LinearGradient>
 
-          {/* Info section */}
+          {/* Contact Info */}
           <View style={s.section}>
             <Text style={s.sectionTitle}>CONTACT INFO</Text>
-            <InfoRow icon="📞" label="Phone"    value={worker.phone} />
-            <InfoRow icon="💬" label="WhatsApp" value={worker.whatsapp} />
-            <InfoRow icon="📧" label="Email"    value={worker.email} />
+            <InfoRow iconName="call-outline"       label="Phone"    value={worker.phone} />
+            <InfoRow iconName="logo-whatsapp"      label="WhatsApp" value={worker.whatsapp} />
+            <InfoRow iconName="mail-outline"       label="Email"    value={worker.email} />
           </View>
 
+          {/* Professional Info */}
           <View style={s.section}>
             <Text style={s.sectionTitle}>PROFESSIONAL INFO</Text>
-            <InfoRow icon={catIcon} label="Category" value={worker.category} />
-            <InfoRow icon="🪪"      label="CNIC"     value={worker.cnic} />
-            <InfoRow icon="📍"      label="City"     value={worker.city} />
+            <InfoRow iconName={catIcon}            label="Category" value={worker.category} />
+            <InfoRow iconName="card-outline"       label="CNIC"     value={worker.cnic} />
+            <InfoRow iconName="map-outline"        label="City"     value={worker.city} />
           </View>
 
           {/* About */}
@@ -142,14 +142,12 @@ const WorkerDetailsScreen = ({ navigation, route }) => {
               <Text style={s.aboutTxt}>
                 {worker.name} is an experienced {worker.category?.toLowerCase()} professional
                 {worker.city ? ` based in ${worker.city}` : ''}.
-                {worker.approvalStatus === 'APPROVED'
-                  ? ' Verified and approved by HunarHub.'
-                  : ' Currently pending verification.'}
+                {isApproved ? ' Verified and approved by HunarHub.' : ' Currently pending verification.'}
               </Text>
             </View>
           </View>
 
-          {/* Standard service */}
+          {/* Services */}
           <View style={s.section}>
             <Text style={s.sectionTitle}>SERVICES</Text>
             <View style={s.serviceCard}>
@@ -164,18 +162,11 @@ const WorkerDetailsScreen = ({ navigation, route }) => {
             </View>
           </View>
 
-          {/* Action buttons */}
+          {/* Actions */}
           <View style={s.actions}>
-            <GradientButton
-              title="Book Now"
-              onPress={() => navigation.navigate('Booking', { worker })}
-              style={{ marginBottom: SIZES.base }}
-            />
-            <TouchableOpacity
-              style={s.chatBtn}
-              onPress={() => navigation.navigate('Chat', { worker })}
-              activeOpacity={0.8}
-            >
+            <GradientButton title="Book Now" onPress={() => navigation.navigate('Booking', { worker })} style={{ marginBottom: SIZES.base }} />
+            <TouchableOpacity style={s.chatBtn} onPress={() => navigation.navigate('Chat', { worker })} activeOpacity={0.8}>
+              <Ionicons name="chatbubble-outline" size={18} color="#00D2FF" style={{ marginRight: 8 }} />
               <Text style={s.chatTxt}>Send Message</Text>
             </TouchableOpacity>
           </View>
@@ -192,70 +183,53 @@ const s = StyleSheet.create({
   errorTxt: { color: '#5A7A90', fontSize: 16, marginBottom: 16 },
   backBtnAlt: { paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12, borderWidth: 1, borderColor: '#00D2FF40' },
   backBtnAltTxt: { color: '#00D2FF', fontWeight: '700' },
-
   backBtn: { position: 'absolute', top: SIZES.extraLarge * 1.8, left: SIZES.padding, zIndex: 10 },
   backBtnInner: {
     flexDirection: 'row', alignItems: 'center',
     backgroundColor: 'rgba(0,210,255,0.1)', borderWidth: 1,
     borderColor: 'rgba(0,210,255,0.25)', borderRadius: 20,
-    paddingHorizontal: 14, paddingVertical: 7,
+    paddingHorizontal: 12, paddingVertical: 7,
   },
-  backArrow: { color: '#00D2FF', fontSize: 16, marginRight: 5, fontWeight: 'bold' },
-  backTxt:   { color: '#00D2FF', fontSize: 13, fontWeight: '600' },
-
+  backTxt: { color: '#00D2FF', fontSize: 13, fontWeight: '600', marginLeft: 2 },
   scroll: { paddingTop: SIZES.extraLarge * 3.5, paddingBottom: 40 },
-
-  // Hero
   hero: {
-    marginHorizontal: SIZES.padding, borderRadius: 24,
-    borderWidth: 1, borderColor: '#0C2540',
-    padding: SIZES.padding + 4, alignItems: 'center',
-    marginBottom: SIZES.base, overflow: 'hidden',
+    marginHorizontal: SIZES.padding, borderRadius: 24, borderWidth: 1, borderColor: '#0C2540',
+    padding: SIZES.padding + 4, alignItems: 'center', marginBottom: SIZES.base, overflow: 'hidden',
   },
   avatar: {
-    width: 90, height: 90, borderRadius: 45,
-    justifyContent: 'center', alignItems: 'center',
-    marginBottom: 14,
-    shadowColor: '#00D2FF', shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.5, shadowRadius: 15, elevation: 12,
+    width: 90, height: 90, borderRadius: 45, justifyContent: 'center', alignItems: 'center', marginBottom: 14,
+    shadowColor: '#00D2FF', shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.5, shadowRadius: 15, elevation: 12,
   },
-  avatarTxt:  { fontSize: 34, fontWeight: '900', color: '#FFF' },
-  name:       { fontSize: 24, fontWeight: '800', color: '#D8EAF8', marginBottom: 10 },
-  catBadge:   { flexDirection: 'row', alignItems: 'center', backgroundColor: '#00D2FF15', borderRadius: 20, borderWidth: 1, borderColor: '#00D2FF30', paddingHorizontal: 14, paddingVertical: 6, marginBottom: 10 },
-  catIcon:    { fontSize: 16, marginRight: 6 },
-  catTxt:     { color: '#00D2FF', fontWeight: '700', fontSize: 14 },
-  ratingRow:  { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
-  ratingStars:{ color: '#FFC107', fontSize: 18, marginRight: 6 },
-  ratingNum:  { color: '#FFC107', fontWeight: '800', fontSize: 18 },
-  newBadge:   { backgroundColor: '#00E67615', borderRadius: 10, borderWidth: 1, borderColor: '#00E67640', paddingHorizontal: 12, paddingVertical: 4, marginBottom: 10 },
-  newBadgeTxt:{ color: '#00E676', fontSize: 11, fontWeight: '700', letterSpacing: 1 },
-  statusBadge:{ borderRadius: 10, borderWidth: 1, paddingHorizontal: 14, paddingVertical: 5, marginBottom: 8 },
-  statusTxt:  { fontSize: 13, fontWeight: '700' },
-  cityTxt:    { color: '#3A5568', fontSize: 13, marginTop: 4 },
-
-  // Sections
-  section:      { marginHorizontal: SIZES.padding, marginBottom: SIZES.base },
+  avatarTxt: { fontSize: 34, fontWeight: '900', color: '#FFF' },
+  name: { fontSize: 24, fontWeight: '800', color: '#D8EAF8', marginBottom: 10 },
+  catBadge: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#00D2FF15', borderRadius: 20, borderWidth: 1, borderColor: '#00D2FF30', paddingHorizontal: 14, paddingVertical: 6, marginBottom: 10 },
+  catTxt: { color: '#00D2FF', fontWeight: '700', fontSize: 14 },
+  ratingRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 10, gap: 2 },
+  ratingNum: { color: '#FFC107', fontWeight: '800', fontSize: 16, marginLeft: 6 },
+  newBadge: { backgroundColor: '#00E67615', borderRadius: 10, borderWidth: 1, borderColor: '#00E67640', paddingHorizontal: 12, paddingVertical: 4, marginBottom: 10 },
+  newBadgeTxt: { color: '#00E676', fontSize: 11, fontWeight: '700', letterSpacing: 1 },
+  statusBadge: { flexDirection: 'row', alignItems: 'center', borderRadius: 10, borderWidth: 1, paddingHorizontal: 14, paddingVertical: 5, marginBottom: 8 },
+  statusTxt: { fontSize: 13, fontWeight: '700' },
+  cityRow: { flexDirection: 'row', alignItems: 'center', marginTop: 4 },
+  cityTxt: { color: '#3A5568', fontSize: 13 },
+  section: { marginHorizontal: SIZES.padding, marginBottom: SIZES.base },
   sectionTitle: { fontSize: 11, color: '#243545', fontWeight: '800', letterSpacing: 2, marginBottom: 10, marginTop: 8 },
-
-  infoRow:     { flexDirection: 'row', alignItems: 'center', backgroundColor: '#0B1825', borderRadius: 14, borderWidth: 1, borderColor: '#162535', padding: 14, marginBottom: 8 },
+  infoRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#0B1825', borderRadius: 14, borderWidth: 1, borderColor: '#162535', padding: 14, marginBottom: 8 },
   infoIconBox: { width: 40, height: 40, borderRadius: 12, backgroundColor: '#00D2FF12', borderWidth: 1, borderColor: '#00D2FF25', justifyContent: 'center', alignItems: 'center', marginRight: 14 },
-  infoIcon:    { fontSize: 18 },
   infoContent: { flex: 1 },
-  infoLabel:   { fontSize: 11, color: '#3A5568', fontWeight: '600', letterSpacing: 0.5, marginBottom: 2 },
-  infoValue:   { fontSize: 15, color: '#C8D8E8', fontWeight: '600' },
-
+  infoLabel: { fontSize: 11, color: '#3A5568', fontWeight: '600', letterSpacing: 0.5, marginBottom: 2 },
+  infoValue: { fontSize: 15, color: '#C8D8E8', fontWeight: '600' },
   aboutCard: { backgroundColor: '#0B1825', borderRadius: 14, borderWidth: 1, borderColor: '#162535', padding: 16 },
-  aboutTxt:  { fontSize: 14, color: '#5A7A90', lineHeight: 22 },
-
+  aboutTxt: { fontSize: 14, color: '#5A7A90', lineHeight: 22 },
   serviceCard: { backgroundColor: '#0B1825', borderRadius: 14, borderWidth: 1, borderColor: '#162535', overflow: 'hidden' },
-  serviceRow:  { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: '#162535' },
+  serviceRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: '#162535' },
   serviceName: { fontSize: 14, color: '#C8D8E8', fontWeight: '600' },
-  servicePrice:{ fontSize: 15, color: '#00E676', fontWeight: '800' },
-
+  servicePrice: { fontSize: 15, color: '#00E676', fontWeight: '800' },
   actions: { marginHorizontal: SIZES.padding, marginTop: SIZES.base },
   chatBtn: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
     borderWidth: 1.5, borderColor: '#00D2FF40', borderRadius: SIZES.radius,
-    padding: SIZES.padding, alignItems: 'center', backgroundColor: '#00D2FF08',
+    padding: SIZES.padding, backgroundColor: '#00D2FF08',
   },
   chatTxt: { color: '#00D2FF', fontWeight: '700', fontSize: 16 },
 });

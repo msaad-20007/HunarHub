@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SIZES, FONTS } from '../../theme/Theme';
 import { messageAPI } from '../../services/api';
 
@@ -87,7 +88,8 @@ const ChatScreen = ({ navigation, route }) => {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
-          <Text style={styles.backText}>{'← Back'}</Text>
+          <Ionicons name="chevron-back" size={18} color={COLORS.primary} />
+          <Text style={styles.backText}>Back</Text>
         </TouchableOpacity>
         <View style={styles.headerCenter}>
           <LinearGradient colors={['#00D2FF25', '#3A7BD520']} style={styles.headerAv}>
@@ -114,7 +116,7 @@ const ChatScreen = ({ navigation, route }) => {
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={
             <View style={styles.emptyWrap}>
-              <Text style={styles.emptyIc}>💬</Text>
+              <Ionicons name="chatbubbles-outline" size={48} color="#3A5568" style={{ marginBottom: 12 }} />
               <Text style={styles.emptyTitle}>No messages yet</Text>
               <Text style={styles.emptyTxt}>Say hello to {workerName}</Text>
             </View>
@@ -139,7 +141,7 @@ const ChatScreen = ({ navigation, route }) => {
           disabled={!newMessage.trim() || sending}
           activeOpacity={0.8}
         >
-          <Text style={styles.sendText}>{sending ? '...' : 'Send'}</Text>
+          <Ionicons name={sending ? 'ellipsis-horizontal' : 'send'} size={18} color="#FFF" />
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
@@ -153,8 +155,8 @@ const styles = StyleSheet.create({
     padding: SIZES.padding, paddingTop: SIZES.extraLarge * 2,
     backgroundColor: COLORS.card, borderBottomWidth: 1, borderBottomColor: COLORS.border,
   },
-  backBtn:      { padding: SIZES.small, minWidth: 60 },
-  backText:     { ...FONTS.body, color: COLORS.primary, fontWeight: '700' },
+  backBtn:      { flexDirection: 'row', alignItems: 'center', padding: SIZES.small, minWidth: 60 },
+  backText:     { ...FONTS.body, color: COLORS.primary, fontWeight: '700', marginLeft: 2 },
   headerCenter: { flexDirection: 'row', alignItems: 'center', flex: 1, justifyContent: 'center' },
   headerAv:     { width: 36, height: 36, borderRadius: 18, justifyContent: 'center', alignItems: 'center', marginRight: 8, borderWidth: 1, borderColor: '#00D2FF30' },
   headerAvTxt:  { fontSize: 15, fontWeight: '800', color: '#00D2FF' },
@@ -162,7 +164,6 @@ const styles = StyleSheet.create({
   loadingWrap:  { flex: 1, justifyContent: 'center', alignItems: 'center' },
   loadingTxt:   { color: COLORS.textSecondary, marginTop: 12, fontSize: 14 },
   emptyWrap:    { flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: 80 },
-  emptyIc:      { fontSize: 48, marginBottom: 12 },
   emptyTitle:   { fontSize: 18, fontWeight: '700', color: COLORS.text, marginBottom: 6 },
   emptyTxt:     { fontSize: 14, color: COLORS.textSecondary },
   list:         { padding: SIZES.padding, paddingBottom: 8, flexGrow: 1 },
@@ -185,8 +186,7 @@ const styles = StyleSheet.create({
     borderRadius: 20, borderWidth: 1, borderColor: COLORS.border,
     marginRight: SIZES.base, fontSize: 14,
   },
-  sendBtn:      { backgroundColor: COLORS.secondary, paddingHorizontal: SIZES.padding, paddingVertical: SIZES.small, borderRadius: 20 },
-  sendText:     { ...FONTS.body, color: '#FFF', fontWeight: 'bold' },
+  sendBtn:      { backgroundColor: COLORS.secondary, width: 44, height: 44, borderRadius: 22, justifyContent: 'center', alignItems: 'center' },
 });
 
 export default ChatScreen;
