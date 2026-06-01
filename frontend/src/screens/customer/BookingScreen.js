@@ -137,7 +137,7 @@ const BookingScreen = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       {/* Header */}
-      <LinearGradient colors={['#0A1E32', '#0C2540']} style={styles.header}>
+      <LinearGradient colors={['#1C1812', '#2A2018']} style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
           <Text style={styles.backText}>‹ Back</Text>
         </TouchableOpacity>
@@ -149,7 +149,7 @@ const BookingScreen = ({ navigation, route }) => {
         {/* Worker summary */}
         {worker && (
           <View style={styles.workerBanner}>
-            <LinearGradient colors={['#00D2FF25', '#3A7BD520']} style={styles.workerAvatar}>
+            <LinearGradient colors={['#F5A62325', '#E8621A20']} style={styles.workerAvatar}>
               <Text style={styles.workerAvatarText}>
                 {worker.name?.charAt(0).toUpperCase() || 'W'}
               </Text>
@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
     paddingHorizontal: SIZES.padding, paddingTop: SIZES.extraLarge * 2, paddingBottom: SIZES.padding,
-    borderBottomWidth: 1, borderBottomColor: '#0C2540',
+    borderBottomWidth: 1, borderBottomColor: '#2A2018',
   },
   backBtn:     { padding: SIZES.small },
   backText:    { ...FONTS.body, color: COLORS.primary, fontSize: 18 },
@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
   workerAvatar: {
     width: 52, height: 52, borderRadius: 26,
     justifyContent: 'center', alignItems: 'center',
-    marginRight: SIZES.small, borderWidth: 1.5, borderColor: '#00D2FF30',
+    marginRight: SIZES.small, borderWidth: 1.5, borderColor: '#F5A62330',
   },
   workerAvatarText: { fontSize: 22, fontWeight: '800', color: COLORS.primary },
   workerName:       { ...FONTS.large, color: COLORS.text, fontWeight: 'bold' },

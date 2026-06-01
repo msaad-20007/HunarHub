@@ -17,9 +17,9 @@ const STATUS_COLOR = {
   PENDING:   { bg: 'rgba(255,193,7,0.15)',  border: 'rgba(255,193,7,0.4)',  text: '#FFC107' },
   ACCEPTED:  { bg: 'rgba(0,230,118,0.15)',  border: 'rgba(0,230,118,0.4)',  text: '#00E676' },
   REJECTED:  { bg: 'rgba(255,76,76,0.15)',  border: 'rgba(255,76,76,0.4)',  text: '#FF4C4C' },
-  COMPLETED: { bg: 'rgba(58,123,213,0.15)', border: 'rgba(58,123,213,0.4)', text: '#3A7BD5' },
+  COMPLETED: { bg: 'rgba(58,123,213,0.15)', border: 'rgba(58,123,213,0.4)', text: '#E8621A' },
 };
-const TYPE_COLOR = { URGENT: '#FF4C4C', ADVANCE: '#3A7BD5', NORMAL: '#00D2FF' };
+const TYPE_COLOR = { URGENT: '#FF4C4C', ADVANCE: '#E8621A', NORMAL: '#F5A623' };
 
 const NAV = [
   { key: 'requests', label: 'Requests', icon: 'clipboard-outline' },
@@ -48,13 +48,13 @@ const WorkerIntro = ({ onDone, workerName }) => {
   }, []);
   return (
     <Animated.View style={[$.intro, { opacity: out }]}>
-      <LinearGradient colors={['#010608', '#030D18', '#060F1C']} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={['#0A0806', '#0A0806', '#0A0806']} style={StyleSheet.absoluteFill} />
       <Animated.View style={[$.introRing,  { transform: [{ scale }], opacity }]} />
       <Animated.View style={[$.introRing2, { transform: [{ scale }], opacity }]} />
       <View style={$.introGlow} />
       <Animated.View style={{ alignItems: 'center', opacity: textOp }}>
         <View style={$.introIconWrap}>
-          <Ionicons name="construct-outline" size={48} color="#00D2FF" />
+          <Ionicons name="construct-outline" size={48} color="#F5A623" />
         </View>
         <Text style={$.introTitle}>WORKER</Text>
         <View style={$.introLine} />
@@ -68,25 +68,25 @@ const WorkerIntro = ({ onDone, workerName }) => {
 // ── Booking Card ──────────────────────────────────────────────────────────────
 const BookingCard = ({ item, onAccept, onReject, onComplete, showActions }) => {
   const sc = STATUS_COLOR[item.status] || STATUS_COLOR.PENDING;
-  const tc = TYPE_COLOR[item.type] || '#00D2FF';
+  const tc = TYPE_COLOR[item.type] || '#F5A623';
   return (
     <View style={$.card}>
       <LinearGradient colors={[tc + '10', 'transparent']} style={$.cardGlow} />
       <View style={$.cardHead}>
-        <LinearGradient colors={['#00D2FF25', '#3A7BD520']} style={$.cardAv}>
+        <LinearGradient colors={['#F5A62325', '#E8621A20']} style={$.cardAv}>
           <Text style={$.cardAvTxt}>{item.customerName?.charAt(0).toUpperCase() || 'C'}</Text>
         </LinearGradient>
         <View style={{ flex: 1 }}>
           <Text style={$.cardName}>{item.customerName || 'Customer'}</Text>
           {item.customerCity ? (
             <View style={$.cardSubRow}>
-              <Ionicons name="location-outline" size={12} color="#3A5568" style={{ marginRight: 3 }} />
+              <Ionicons name="location-outline" size={12} color="#6B5D4F" style={{ marginRight: 3 }} />
               <Text style={$.cardSub}>{item.customerCity}</Text>
             </View>
           ) : null}
           {item.customerPhone ? (
             <View style={$.cardSubRow}>
-              <Ionicons name="call-outline" size={12} color="#3A5568" style={{ marginRight: 3 }} />
+              <Ionicons name="call-outline" size={12} color="#6B5D4F" style={{ marginRight: 3 }} />
               <Text style={$.cardSub}>{item.customerPhone}</Text>
             </View>
           ) : null}
@@ -101,11 +101,11 @@ const BookingCard = ({ item, onAccept, onReject, onComplete, showActions }) => {
         </View>
       </View>
       <View style={$.detRow}>
-        <Ionicons name="calendar-outline" size={14} color="#3A5568" style={{ marginRight: 8 }} />
+        <Ionicons name="calendar-outline" size={14} color="#6B5D4F" style={{ marginRight: 8 }} />
         <Text style={$.detVal}>{item.bookingDate ? String(item.bookingDate).replace('T','  ').slice(0,16) : 'N/A'}</Text>
       </View>
       <View style={$.detRow}>
-        <Ionicons name="receipt-outline" size={14} color="#3A5568" style={{ marginRight: 8 }} />
+        <Ionicons name="receipt-outline" size={14} color="#6B5D4F" style={{ marginRight: 8 }} />
         <Text style={$.detVal}>Booking #{item.bookingId}</Text>
       </View>
       {showActions && item.status === 'PENDING' && (
@@ -122,9 +122,9 @@ const BookingCard = ({ item, onAccept, onReject, onComplete, showActions }) => {
       )}
       {showActions && item.status === 'ACCEPTED' && (
         <View style={$.cardActs}>
-          <TouchableOpacity style={[$.actBtn, { flex: 1, backgroundColor: '#3A7BD514', borderColor: '#3A7BD540' }]} onPress={() => onComplete(item)} activeOpacity={0.8}>
-            <Ionicons name="checkmark-done-outline" size={16} color="#3A7BD5" style={{ marginRight: 5 }} />
-            <Text style={[$.actTxt, { color: '#3A7BD5' }]}>Mark as Completed</Text>
+          <TouchableOpacity style={[$.actBtn, { flex: 1, backgroundColor: '#E8621A14', borderColor: '#E8621A40' }]} onPress={() => onComplete(item)} activeOpacity={0.8}>
+            <Ionicons name="checkmark-done-outline" size={16} color="#E8621A" style={{ marginRight: 5 }} />
+            <Text style={[$.actTxt, { color: '#E8621A' }]}>Mark as Completed</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -184,10 +184,10 @@ const ChatTab = ({ workerId }) => {
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined} keyboardVerticalOffset={80}>
         <View style={$.chatHeader}>
           <TouchableOpacity onPress={() => setActiveChat(null)} style={$.chatBack}>
-            <Ionicons name="chevron-back" size={20} color="#00D2FF" />
+            <Ionicons name="chevron-back" size={20} color="#F5A623" />
             <Text style={$.chatBackTxt}>Back</Text>
           </TouchableOpacity>
-          <LinearGradient colors={['#00D2FF25', '#3A7BD520']} style={$.chatAv}>
+          <LinearGradient colors={['#F5A62325', '#E8621A20']} style={$.chatAv}>
             <Text style={$.chatAvTxt}>{activeChat.name.charAt(0).toUpperCase()}</Text>
           </LinearGradient>
           <Text style={$.chatHeaderName}>{activeChat.name}</Text>
@@ -198,7 +198,7 @@ const ChatTab = ({ workerId }) => {
           contentContainerStyle={$.msgList} showsVerticalScrollIndicator={false}
           ListEmptyComponent={
             <View style={$.emptyWrap}>
-              <Ionicons name="chatbubbles-outline" size={48} color="#3A5568" />
+              <Ionicons name="chatbubbles-outline" size={48} color="#6B5D4F" />
               <Text style={$.emptyTitle}>No messages yet</Text>
               <Text style={$.emptyTxt}>Start the conversation</Text>
             </View>
@@ -214,9 +214,9 @@ const ChatTab = ({ workerId }) => {
           }}
         />
         <View style={$.msgInputRow}>
-          <TextInput style={$.msgInput} placeholder="Type a message..." placeholderTextColor="#2A3D50" value={msgText} onChangeText={setMsgText} multiline />
+          <TextInput style={$.msgInput} placeholder="Type a message..." placeholderTextColor="#6B5D4F" value={msgText} onChangeText={setMsgText} multiline />
           <TouchableOpacity style={[$.msgSendBtn, (!msgText.trim() || sending) && { opacity: 0.4 }]} onPress={sendMessage} disabled={!msgText.trim() || sending} activeOpacity={0.8}>
-            <Ionicons name="send" size={20} color="#060E18" />
+            <Ionicons name="send" size={20} color="#0F0D0A" />
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
@@ -238,21 +238,21 @@ const ChatTab = ({ workerId }) => {
       }
       ListEmptyComponent={
         <View style={$.emptyWrap}>
-          <Ionicons name="chatbubbles-outline" size={48} color="#3A5568" />
+          <Ionicons name="chatbubbles-outline" size={48} color="#6B5D4F" />
           <Text style={$.emptyTitle}>No messages yet</Text>
           <Text style={$.emptyTxt}>Customers who book you can message you here</Text>
         </View>
       }
       renderItem={({ item }) => (
         <TouchableOpacity style={$.convCard} onPress={() => openChat(item)} activeOpacity={0.8}>
-          <LinearGradient colors={['#00D2FF25', '#3A7BD520']} style={$.convAv}>
+          <LinearGradient colors={['#F5A62325', '#E8621A20']} style={$.convAv}>
             <Text style={$.convAvTxt}>{item.name.charAt(0).toUpperCase()}</Text>
           </LinearGradient>
           <View style={{ flex: 1 }}>
             <Text style={$.convName}>{item.name}</Text>
             <Text style={$.convSub}>Tap to open conversation</Text>
           </View>
-          <Ionicons name="chevron-forward" size={18} color="#3A5568" />
+          <Ionicons name="chevron-forward" size={18} color="#6B5D4F" />
         </TouchableOpacity>
       )}
     />
@@ -296,8 +296,8 @@ const ProfileTab = ({ profile, workerId, onProfileUpdated }) => {
 
   return (
     <ScrollView contentContainerStyle={$.profileScroll} showsVerticalScrollIndicator={false}>
-      <LinearGradient colors={['#0A1E32', '#060E18']} style={$.profileHero}>
-        <LinearGradient colors={['#00D2FF25', '#3A7BD520']} style={$.profileAv}>
+      <LinearGradient colors={['#1C1812', '#0F0D0A']} style={$.profileHero}>
+        <LinearGradient colors={['#F5A62325', '#E8621A20']} style={$.profileAv}>
           <Text style={$.profileAvTxt}>{initials}</Text>
         </LinearGradient>
         <Text style={$.profileName}>{profile.name}</Text>
@@ -328,9 +328,9 @@ const ProfileTab = ({ profile, workerId, onProfileUpdated }) => {
             </TouchableOpacity>
           </>
         ) : (
-          <TouchableOpacity style={[$.editBtn, { backgroundColor: '#00D2FF14', borderColor: '#00D2FF40' }]} onPress={() => setEditing(true)} activeOpacity={0.8}>
-            <Ionicons name="create-outline" size={16} color="#00D2FF" style={{ marginRight: 5 }} />
-            <Text style={[$.editBtnTxt, { color: '#00D2FF' }]}>Edit Profile</Text>
+          <TouchableOpacity style={[$.editBtn, { backgroundColor: '#F5A62314', borderColor: '#F5A62340' }]} onPress={() => setEditing(true)} activeOpacity={0.8}>
+            <Ionicons name="create-outline" size={16} color="#F5A623" style={{ marginRight: 5 }} />
+            <Text style={[$.editBtnTxt, { color: '#F5A623' }]}>Edit Profile</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -343,10 +343,10 @@ const ProfileTab = ({ profile, workerId, onProfileUpdated }) => {
             { icon: 'map-outline',    label: 'CITY',  key: 'city',  keyboard: 'default' },
           ].map((row, i) => (
             <View key={i} style={$.profileRow}>
-              <View style={$.profileRowIconBox}><Ionicons name={row.icon} size={18} color="#3A5568" /></View>
+              <View style={$.profileRowIconBox}><Ionicons name={row.icon} size={18} color="#6B5D4F" /></View>
               <View style={{ flex: 1 }}>
                 <Text style={$.profileRowLabel}>{row.label}</Text>
-                <TextInput style={$.profileEditInput} value={form[row.key]} onChangeText={v => setForm(f => ({ ...f, [row.key]: v }))} placeholderTextColor="#3A5568" keyboardType={row.keyboard} />
+                <TextInput style={$.profileEditInput} value={form[row.key]} onChangeText={v => setForm(f => ({ ...f, [row.key]: v }))} placeholderTextColor="#6B5D4F" keyboardType={row.keyboard} />
               </View>
             </View>
           ))
@@ -357,7 +357,7 @@ const ProfileTab = ({ profile, workerId, onProfileUpdated }) => {
             { icon: 'map-outline',    label: 'City',  value: profile.city  || 'Not set' },
           ].map((row, i) => (
             <View key={i} style={$.profileRow}>
-              <View style={$.profileRowIconBox}><Ionicons name={row.icon} size={18} color="#3A5568" /></View>
+              <View style={$.profileRowIconBox}><Ionicons name={row.icon} size={18} color="#6B5D4F" /></View>
               <View style={{ flex: 1 }}>
                 <Text style={$.profileRowLabel}>{row.label.toUpperCase()}</Text>
                 <Text style={$.profileRowValue}>{row.value}</Text>
@@ -367,7 +367,7 @@ const ProfileTab = ({ profile, workerId, onProfileUpdated }) => {
         )}
         {PROFILE_ROWS_READONLY.map((row, i) => (
           <View key={'ro' + i} style={$.profileRow}>
-            <View style={$.profileRowIconBox}><Ionicons name={row.icon} size={18} color="#3A5568" /></View>
+            <View style={$.profileRowIconBox}><Ionicons name={row.icon} size={18} color="#6B5D4F" /></View>
             <View style={{ flex: 1 }}>
               <Text style={$.profileRowLabel}>{row.label.toUpperCase()}</Text>
               <Text style={$.profileRowValue}>{row.value}</Text>
@@ -467,7 +467,7 @@ const WorkerDashboard = () => {
         }
         ListEmptyComponent={
           <View style={$.emptyWrap}>
-            <Ionicons name={activeTab === 'requests' ? 'mail-open-outline' : 'clipboard-outline'} size={48} color="#3A5568" />
+            <Ionicons name={activeTab === 'requests' ? 'mail-open-outline' : 'clipboard-outline'} size={48} color="#6B5D4F" />
             <Text style={$.emptyTitle}>{activeTab === 'requests' ? 'No pending requests' : 'No booking history'}</Text>
             <Text style={$.emptyTxt}>Pull down to refresh</Text>
           </View>
@@ -479,7 +479,7 @@ const WorkerDashboard = () => {
 
   return (
     <View style={$.root}>
-      <LinearGradient colors={['#020810', '#040D1A']} style={$.header}>
+      <LinearGradient colors={['#0A0806', '#0A0806']} style={$.header}>
         <View style={$.hLeft}>
           <View style={$.hDot} />
           <View>
@@ -500,9 +500,9 @@ const WorkerDashboard = () => {
           const active = activeTab === tab.key;
           return (
             <TouchableOpacity key={tab.key} style={$.navItem} onPress={() => setActiveTab(tab.key)} activeOpacity={0.8}>
-              {active && <LinearGradient colors={['#00D2FF25', 'transparent']} style={$.navGlow} />}
+              {active && <LinearGradient colors={['#F5A62325', 'transparent']} style={$.navGlow} />}
               <View style={[$.navIconWrap, active && $.navIconWrapActive]}>
-                <Ionicons name={tab.icon} size={22} color={active ? '#00D2FF' : '#2A3D50'} />
+                <Ionicons name={tab.icon} size={22} color={active ? '#F5A623' : '#6B5D4F'} />
                 {tab.key === 'requests' && pendingCount > 0 && (
                   <View style={$.navBadge}><Text style={$.navBadgeTxt}>{pendingCount}</Text></View>
                 )}
@@ -519,75 +519,75 @@ const WorkerDashboard = () => {
 
 // ── Styles ────────────────────────────────────────────────────────────────────
 const $ = StyleSheet.create({
-  root: { flex: 1, backgroundColor: '#060E18' },
-  intro: { ...StyleSheet.absoluteFillObject, justifyContent: 'center', alignItems: 'center', zIndex: 999, backgroundColor: '#010608' },
-  introRing:  { position: 'absolute', width: 280, height: 280, borderRadius: 140, borderWidth: 1.5, borderColor: '#00D2FF50' },
-  introRing2: { position: 'absolute', width: 180, height: 180, borderRadius: 90,  borderWidth: 1,   borderColor: '#00D2FF80' },
-  introGlow:  { position: 'absolute', width: 100, height: 100, borderRadius: 50, backgroundColor: '#00D2FF', opacity: 0.06 },
+  root: { flex: 1, backgroundColor: '#0F0D0A' },
+  intro: { ...StyleSheet.absoluteFillObject, justifyContent: 'center', alignItems: 'center', zIndex: 999, backgroundColor: '#0A0806' },
+  introRing:  { position: 'absolute', width: 280, height: 280, borderRadius: 140, borderWidth: 1.5, borderColor: '#F5A62350' },
+  introRing2: { position: 'absolute', width: 180, height: 180, borderRadius: 90,  borderWidth: 1,   borderColor: '#F5A62380' },
+  introGlow:  { position: 'absolute', width: 100, height: 100, borderRadius: 50, backgroundColor: '#F5A623', opacity: 0.06 },
   introIconWrap: { marginBottom: 16, alignItems: 'center' },
   introTitle: { fontSize: 44, fontWeight: '900', color: '#FFFFFF', letterSpacing: 14, textAlign: 'center' },
-  introLine:  { width: 120, height: 3, backgroundColor: '#00D2FF', marginVertical: 12, borderRadius: 2 },
-  introDash:  { fontSize: 22, fontWeight: '200', color: '#00D2FF', letterSpacing: 10, textAlign: 'center' },
-  introSub:   { fontSize: 13, color: '#1E3040', letterSpacing: 2, marginTop: 18, textAlign: 'center' },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingTop: SIZES.extraLarge * 2, paddingBottom: 16, borderBottomWidth: 1, borderBottomColor: '#0C1E2E' },
+  introLine:  { width: 120, height: 3, backgroundColor: '#F5A623', marginVertical: 12, borderRadius: 2 },
+  introDash:  { fontSize: 22, fontWeight: '200', color: '#F5A623', letterSpacing: 10, textAlign: 'center' },
+  introSub:   { fontSize: 13, color: '#3D3020', letterSpacing: 2, marginTop: 18, textAlign: 'center' },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingTop: SIZES.extraLarge * 2, paddingBottom: 16, borderBottomWidth: 1, borderBottomColor: '#2E2820' },
   hLeft:  { flexDirection: 'row', alignItems: 'center' },
-  hDot:   { width: 10, height: 10, borderRadius: 5, backgroundColor: '#00D2FF', marginRight: 12, shadowColor: '#00D2FF', shadowOffset: { width: 0, height: 0 }, shadowOpacity: 1, shadowRadius: 10, elevation: 8 },
-  hTitle: { fontSize: 20, fontWeight: '800', color: '#D8EAF8', letterSpacing: 0.3 },
-  hSub:   { fontSize: 12, color: '#243545', marginTop: 2 },
+  hDot:   { width: 10, height: 10, borderRadius: 5, backgroundColor: '#F5A623', marginRight: 12, shadowColor: '#F5A623', shadowOffset: { width: 0, height: 0 }, shadowOpacity: 1, shadowRadius: 10, elevation: 8 },
+  hTitle: { fontSize: 20, fontWeight: '800', color: '#F5EFE6', letterSpacing: 0.3 },
+  hSub:   { fontSize: 12, color: '#4A3D30', marginTop: 2 },
   logoutBtn: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingVertical: 9, borderRadius: 12, borderWidth: 1, borderColor: '#FF4C4C35', backgroundColor: '#FF4C4C10' },
   logoutTxt: { fontSize: 13, color: '#FF4C4C', fontWeight: '700' },
   content: { flex: 1 },
   list: { padding: 20, paddingBottom: 20 },
   listEmpty: { flex: 1 },
   listHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
-  listTitle: { fontSize: 20, fontWeight: '800', color: '#D8EAF8' },
-  listCount: { backgroundColor: '#0B1825', borderRadius: 10, paddingHorizontal: 12, paddingVertical: 5, borderWidth: 1, borderColor: '#162535' },
-  listCountTxt: { fontSize: 12, color: '#3A5568', fontWeight: '600' },
+  listTitle: { fontSize: 20, fontWeight: '800', color: '#F5EFE6' },
+  listCount: { backgroundColor: '#1C1812', borderRadius: 10, paddingHorizontal: 12, paddingVertical: 5, borderWidth: 1, borderColor: '#2E2820' },
+  listCountTxt: { fontSize: 12, color: '#6B5D4F', fontWeight: '600' },
   emptyWrap:  { flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: 80 },
-  emptyTitle: { fontSize: 18, fontWeight: '700', color: '#C0D8EC', marginBottom: 6, marginTop: 12 },
-  emptyTxt:   { fontSize: 14, color: '#243545', marginTop: 8, textAlign: 'center', paddingHorizontal: 20 },
-  card: { backgroundColor: '#0B1825', borderRadius: 20, borderWidth: 1, borderColor: '#162535', padding: 18, marginBottom: 14, overflow: 'hidden' },
+  emptyTitle: { fontSize: 18, fontWeight: '700', color: '#F5EFE6', marginBottom: 6, marginTop: 12 },
+  emptyTxt:   { fontSize: 14, color: '#4A3D30', marginTop: 8, textAlign: 'center', paddingHorizontal: 20 },
+  card: { backgroundColor: '#1C1812', borderRadius: 20, borderWidth: 1, borderColor: '#2E2820', padding: 18, marginBottom: 14, overflow: 'hidden' },
   cardGlow: { position: 'absolute', top: 0, left: 0, right: 0, height: 60 },
   cardHead: { flexDirection: 'row', alignItems: 'center', marginBottom: 12 },
-  cardAv:   { width: 50, height: 50, borderRadius: 25, justifyContent: 'center', alignItems: 'center', marginRight: 12, borderWidth: 1.5, borderColor: '#00D2FF30' },
-  cardAvTxt:{ fontSize: 20, fontWeight: '800', color: '#00D2FF' },
-  cardName: { fontSize: 16, fontWeight: '700', color: '#D8EAF8', marginBottom: 3 },
+  cardAv:   { width: 50, height: 50, borderRadius: 25, justifyContent: 'center', alignItems: 'center', marginRight: 12, borderWidth: 1.5, borderColor: '#F5A62330' },
+  cardAvTxt:{ fontSize: 20, fontWeight: '800', color: '#F5A623' },
+  cardName: { fontSize: 16, fontWeight: '700', color: '#F5EFE6', marginBottom: 3 },
   cardSubRow:{ flexDirection: 'row', alignItems: 'center', marginTop: 2 },
-  cardSub:  { fontSize: 13, color: '#3A5568' },
+  cardSub:  { fontSize: 13, color: '#6B5D4F' },
   badge:    { borderRadius: 10, borderWidth: 1, paddingHorizontal: 10, paddingVertical: 4 },
   badgeTxt: { fontSize: 11, fontWeight: '700' },
   detRow:   { flexDirection: 'row', alignItems: 'center', marginBottom: 6 },
-  detVal:   { fontSize: 13, color: '#3A5568', flex: 1 },
-  cardActs: { flexDirection: 'row', marginTop: 14, borderTopWidth: 1, borderTopColor: '#162535', paddingTop: 14, gap: 10 },
+  detVal:   { fontSize: 13, color: '#6B5D4F', flex: 1 },
+  cardActs: { flexDirection: 'row', marginTop: 14, borderTopWidth: 1, borderTopColor: '#2E2820', paddingTop: 14, gap: 10 },
   actBtn:   { flex: 1, flexDirection: 'row', paddingVertical: 11, borderRadius: 12, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
   actTxt:   { fontSize: 14, fontWeight: '700' },
-  chatHeader: { flexDirection: 'row', alignItems: 'center', padding: 16, paddingTop: 12, backgroundColor: '#0B1825', borderBottomWidth: 1, borderBottomColor: '#162535' },
+  chatHeader: { flexDirection: 'row', alignItems: 'center', padding: 16, paddingTop: 12, backgroundColor: '#1C1812', borderBottomWidth: 1, borderBottomColor: '#2E2820' },
   chatBack:   { flexDirection: 'row', alignItems: 'center', marginRight: 12 },
-  chatBackTxt:{ color: '#00D2FF', fontSize: 15, fontWeight: '700', marginLeft: 2 },
-  chatAv:     { width: 38, height: 38, borderRadius: 19, justifyContent: 'center', alignItems: 'center', marginRight: 10, borderWidth: 1, borderColor: '#00D2FF30' },
-  chatAvTxt:  { fontSize: 16, fontWeight: '800', color: '#00D2FF' },
-  chatHeaderName: { fontSize: 17, fontWeight: '700', color: '#D8EAF8', flex: 1 },
+  chatBackTxt:{ color: '#F5A623', fontSize: 15, fontWeight: '700', marginLeft: 2 },
+  chatAv:     { width: 38, height: 38, borderRadius: 19, justifyContent: 'center', alignItems: 'center', marginRight: 10, borderWidth: 1, borderColor: '#F5A62330' },
+  chatAvTxt:  { fontSize: 16, fontWeight: '800', color: '#F5A623' },
+  chatHeaderName: { fontSize: 17, fontWeight: '700', color: '#F5EFE6', flex: 1 },
   msgList:    { padding: 16, paddingBottom: 8 },
   bubble:     { maxWidth: '78%', padding: 12, borderRadius: 18, marginBottom: 8 },
-  bubbleMe:   { alignSelf: 'flex-end',   backgroundColor: '#00D2FF', borderBottomRightRadius: 4 },
-  bubbleThem: { alignSelf: 'flex-start', backgroundColor: '#0B1825', borderBottomLeftRadius: 4, borderWidth: 1, borderColor: '#162535' },
-  bubbleTxt:  { fontSize: 14, color: '#D8EAF8' },
-  bubbleTxtMe:{ color: '#060E18', fontWeight: '600' },
-  bubbleTime: { fontSize: 10, color: '#3A5568', alignSelf: 'flex-end', marginTop: 4 },
-  msgInputRow:{ flexDirection: 'row', padding: 12, backgroundColor: '#0B1825', borderTopWidth: 1, borderTopColor: '#162535', alignItems: 'flex-end' },
-  msgInput:   { flex: 1, backgroundColor: '#060E18', color: '#D8EAF8', paddingHorizontal: 16, paddingVertical: 10, borderRadius: 20, borderWidth: 1, borderColor: '#162535', marginRight: 10, maxHeight: 100, fontSize: 14 },
-  msgSendBtn: { width: 44, height: 44, borderRadius: 22, backgroundColor: '#00D2FF', justifyContent: 'center', alignItems: 'center' },
-  convCard:   { flexDirection: 'row', alignItems: 'center', backgroundColor: '#0B1825', borderRadius: 16, borderWidth: 1, borderColor: '#162535', padding: 14, marginBottom: 10 },
-  convAv:     { width: 46, height: 46, borderRadius: 23, justifyContent: 'center', alignItems: 'center', marginRight: 12, borderWidth: 1, borderColor: '#00D2FF30' },
-  convAvTxt:  { fontSize: 18, fontWeight: '800', color: '#00D2FF' },
-  convName:   { fontSize: 15, fontWeight: '700', color: '#D8EAF8', marginBottom: 3 },
-  convSub:    { fontSize: 12, color: '#3A5568' },
+  bubbleMe:   { alignSelf: 'flex-end',   backgroundColor: '#F5A623', borderBottomRightRadius: 4 },
+  bubbleThem: { alignSelf: 'flex-start', backgroundColor: '#1C1812', borderBottomLeftRadius: 4, borderWidth: 1, borderColor: '#2E2820' },
+  bubbleTxt:  { fontSize: 14, color: '#F5EFE6' },
+  bubbleTxtMe:{ color: '#0F0D0A', fontWeight: '600' },
+  bubbleTime: { fontSize: 10, color: '#6B5D4F', alignSelf: 'flex-end', marginTop: 4 },
+  msgInputRow:{ flexDirection: 'row', padding: 12, backgroundColor: '#1C1812', borderTopWidth: 1, borderTopColor: '#2E2820', alignItems: 'flex-end' },
+  msgInput:   { flex: 1, backgroundColor: '#0F0D0A', color: '#F5EFE6', paddingHorizontal: 16, paddingVertical: 10, borderRadius: 20, borderWidth: 1, borderColor: '#2E2820', marginRight: 10, maxHeight: 100, fontSize: 14 },
+  msgSendBtn: { width: 44, height: 44, borderRadius: 22, backgroundColor: '#F5A623', justifyContent: 'center', alignItems: 'center' },
+  convCard:   { flexDirection: 'row', alignItems: 'center', backgroundColor: '#1C1812', borderRadius: 16, borderWidth: 1, borderColor: '#2E2820', padding: 14, marginBottom: 10 },
+  convAv:     { width: 46, height: 46, borderRadius: 23, justifyContent: 'center', alignItems: 'center', marginRight: 12, borderWidth: 1, borderColor: '#F5A62330' },
+  convAvTxt:  { fontSize: 18, fontWeight: '800', color: '#F5A623' },
+  convName:   { fontSize: 15, fontWeight: '700', color: '#F5EFE6', marginBottom: 3 },
+  convSub:    { fontSize: 12, color: '#6B5D4F' },
   profileScroll: { paddingBottom: 20 },
-  profileHero:   { alignItems: 'center', paddingVertical: SIZES.extraLarge + 8, borderBottomWidth: 1, borderBottomColor: '#0C2540' },
-  profileAv:     { width: 90, height: 90, borderRadius: 45, justifyContent: 'center', alignItems: 'center', marginBottom: SIZES.small, borderWidth: 2, borderColor: '#00D2FF40' },
-  profileAvTxt:  { fontSize: 34, fontWeight: '800', color: '#00D2FF' },
-  profileName:   { fontSize: 22, fontWeight: '800', color: '#D8EAF8', marginBottom: 4 },
-  profileCat:    { fontSize: 16, color: '#00D2FF', marginBottom: 10 },
+  profileHero:   { alignItems: 'center', paddingVertical: SIZES.extraLarge + 8, borderBottomWidth: 1, borderBottomColor: '#2A2018' },
+  profileAv:     { width: 90, height: 90, borderRadius: 45, justifyContent: 'center', alignItems: 'center', marginBottom: SIZES.small, borderWidth: 2, borderColor: '#F5A62340' },
+  profileAvTxt:  { fontSize: 34, fontWeight: '800', color: '#F5A623' },
+  profileName:   { fontSize: 22, fontWeight: '800', color: '#F5EFE6', marginBottom: 4 },
+  profileCat:    { fontSize: 16, color: '#F5A623', marginBottom: 10 },
   statusBadge:   { flexDirection: 'row', alignItems: 'center', borderRadius: 12, borderWidth: 1, paddingHorizontal: 14, paddingVertical: 6, marginBottom: 8 },
   statusBadgeTxt:{ fontSize: 13, fontWeight: '700' },
   ratingRow:     { flexDirection: 'row', alignItems: 'center', marginTop: 4 },
@@ -595,22 +595,22 @@ const $ = StyleSheet.create({
   editBtnRow:    { flexDirection: 'row', justifyContent: 'center', paddingHorizontal: 16, paddingVertical: 14 },
   editBtn:       { flex: 1, flexDirection: 'row', paddingVertical: 12, borderRadius: 14, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
   editBtnTxt:    { fontSize: 14, fontWeight: '700' },
-  profileCard:   { backgroundColor: '#0B1825', marginHorizontal: 16, borderRadius: 20, borderWidth: 1, borderColor: '#162535', overflow: 'hidden' },
-  profileRow:    { flexDirection: 'row', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: '#162535' },
-  profileRowIconBox: { width: 32, height: 32, borderRadius: 8, backgroundColor: '#162535', justifyContent: 'center', alignItems: 'center', marginRight: 12 },
-  profileRowLabel:   { fontSize: 11, color: '#3A5568', fontWeight: '700', letterSpacing: 0.5, marginBottom: 2 },
-  profileRowValue:   { fontSize: 15, color: '#D8EAF8', fontWeight: '500' },
-  profileEditInput:  { fontSize: 15, color: '#D8EAF8', fontWeight: '500', borderBottomWidth: 1, borderBottomColor: '#00D2FF40', paddingVertical: 4, paddingHorizontal: 2 },
-  nav:              { flexDirection: 'row', backgroundColor: '#070E18', borderTopWidth: 1, borderTopColor: '#0C1E2E', paddingBottom: 8, paddingTop: 4 },
+  profileCard:   { backgroundColor: '#1C1812', marginHorizontal: 16, borderRadius: 20, borderWidth: 1, borderColor: '#2E2820', overflow: 'hidden' },
+  profileRow:    { flexDirection: 'row', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: '#2E2820' },
+  profileRowIconBox: { width: 32, height: 32, borderRadius: 8, backgroundColor: '#2E2820', justifyContent: 'center', alignItems: 'center', marginRight: 12 },
+  profileRowLabel:   { fontSize: 11, color: '#6B5D4F', fontWeight: '700', letterSpacing: 0.5, marginBottom: 2 },
+  profileRowValue:   { fontSize: 15, color: '#F5EFE6', fontWeight: '500' },
+  profileEditInput:  { fontSize: 15, color: '#F5EFE6', fontWeight: '500', borderBottomWidth: 1, borderBottomColor: '#F5A62340', paddingVertical: 4, paddingHorizontal: 2 },
+  nav:              { flexDirection: 'row', backgroundColor: '#0F0D0A', borderTopWidth: 1, borderTopColor: '#2E2820', paddingBottom: 8, paddingTop: 4 },
   navItem:          { flex: 1, alignItems: 'center', paddingVertical: 8, position: 'relative', overflow: 'hidden' },
   navGlow:          { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
   navIconWrap:      { width: 44, height: 44, borderRadius: 14, justifyContent: 'center', alignItems: 'center', position: 'relative' },
-  navIconWrapActive:{ backgroundColor: '#00D2FF15', borderWidth: 1, borderColor: '#00D2FF25' },
+  navIconWrapActive:{ backgroundColor: '#F5A62315', borderWidth: 1, borderColor: '#F5A62325' },
   navBadge:         { position: 'absolute', top: -2, right: -2, backgroundColor: '#FF4C4C', borderRadius: 8, minWidth: 16, height: 16, justifyContent: 'center', alignItems: 'center' },
   navBadgeTxt:      { color: '#FFF', fontSize: 9, fontWeight: '800' },
-  navLbl:           { fontSize: 11, color: '#2A3D50', fontWeight: '600', marginTop: 3 },
-  navLblActive:     { color: '#00D2FF', fontWeight: '700' },
-  navLine:          { position: 'absolute', bottom: 0, width: 28, height: 2.5, backgroundColor: '#00D2FF', borderRadius: 2 },
+  navLbl:           { fontSize: 11, color: '#6B5D4F', fontWeight: '600', marginTop: 3 },
+  navLblActive:     { color: '#F5A623', fontWeight: '700' },
+  navLine:          { position: 'absolute', bottom: 0, width: 28, height: 2.5, backgroundColor: '#F5A623', borderRadius: 2 },
 });
 
 export default WorkerDashboard;

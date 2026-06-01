@@ -9,7 +9,7 @@ const { width } = Dimensions.get('window');
 const FEATURES = [
   { icon: 'flash-outline',     title: 'Instant Booking',   desc: 'Book a skilled worker in seconds',     color: '#FFD700' },
   { icon: 'shield-checkmark-outline', title: 'Verified Workers', desc: 'Approved & rated professionals only', color: '#00E676' },
-  { icon: 'chatbubble-outline', title: 'Direct Chat',      desc: 'Talk to workers before you hire',      color: '#00D2FF' },
+  { icon: 'chatbubble-outline', title: 'Direct Chat',      desc: 'Talk to workers before you hire',      color: '#F5A623' },
   { icon: 'location-outline',  title: 'Near You',          desc: 'Find workers in your city instantly',  color: '#FF6B6B' },
 ];
 
@@ -63,14 +63,14 @@ const LandingScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
-      <LinearGradient colors={['#050A14', '#0D1B2A', '#121212']} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={['#0A0806', '#0F0D0A', '#0F0D0A']} style={StyleSheet.absoluteFill} />
       <View style={[styles.bgCircle, styles.bgCircle1]} />
       <View style={[styles.bgCircle, styles.bgCircle2]} />
 
       {/* Hero */}
       <Animated.View style={[styles.hero, { opacity: heroOpacity, transform: [{ scale: heroScale }] }]}>
         <LinearGradient
-          colors={[COLORS.primary, '#0066CC', COLORS.secondary]}
+          colors={[COLORS.primary, '#C4500F', COLORS.secondary]}
           start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
           style={styles.logoBox}
         >
@@ -121,7 +121,7 @@ const LandingScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, backgroundColor: '#0D1B2A',
+    flex: 1, backgroundColor: '#0F0D0A',
     paddingHorizontal: SIZES.padding,
     paddingTop: SIZES.extraLarge * 2.2,
     paddingBottom: SIZES.padding,

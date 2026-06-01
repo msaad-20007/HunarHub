@@ -129,7 +129,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
 
   const STEP_META = [
     { icon: 'mail-outline',        color: '#FF6B35', title: 'Forgot Password?',  subtitle: "Enter your email and we'll send\na 6-digit verification code" },
-    { icon: 'keypad-outline',      color: '#00D2FF', title: 'Enter Code',        subtitle: `We sent a 6-digit code to\n${email}` },
+    { icon: 'keypad-outline',      color: '#F5A623', title: 'Enter Code',        subtitle: `We sent a 6-digit code to\n${email}` },
     { icon: 'lock-closed-outline', color: '#00E676', title: 'New Password',      subtitle: 'Create a strong password\nfor your account' },
   ];
   const meta = STEP_META[step - 1];
@@ -139,9 +139,9 @@ const ForgotPasswordScreen = ({ navigation }) => {
       <View style={s.card}>
         <Text style={s.label}>EMAIL ADDRESS</Text>
         <View style={s.inputWrap}>
-          <Ionicons name="mail-outline" size={18} color="#3A5568" style={s.inputIcon} />
+          <Ionicons name="mail-outline" size={18} color="#6B5D4F" style={s.inputIcon} />
           <TextInput
-            style={s.input} placeholder="Enter your email" placeholderTextColor="#3A5568"
+            style={s.input} placeholder="Enter your email" placeholderTextColor="#6B5D4F"
             value={email} onChangeText={setEmail} keyboardType="email-address"
             autoCapitalize="none" autoCorrect={false}
           />
@@ -162,7 +162,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
           }
         </TouchableOpacity>
         <TouchableOpacity style={s.changeRow} onPress={() => { setOtp(''); goStep(1); }}>
-          <Ionicons name="chevron-back" size={14} color="#3A5568" />
+          <Ionicons name="chevron-back" size={14} color="#6B5D4F" />
           <Text style={s.changeText}>Change email</Text>
         </TouchableOpacity>
       </View>
@@ -172,21 +172,21 @@ const ForgotPasswordScreen = ({ navigation }) => {
       <View style={s.card}>
         <Text style={s.label}>NEW PASSWORD</Text>
         <View style={s.inputWrap}>
-          <Ionicons name="lock-closed-outline" size={18} color="#3A5568" style={s.inputIcon} />
+          <Ionicons name="lock-closed-outline" size={18} color="#6B5D4F" style={s.inputIcon} />
           <TextInput
-            style={s.input} placeholder="Min. 6 characters" placeholderTextColor="#3A5568"
+            style={s.input} placeholder="Min. 6 characters" placeholderTextColor="#6B5D4F"
             value={newPass} onChangeText={setNewPass} secureTextEntry={!showPass}
           />
           <TouchableOpacity onPress={() => setShowPass(v => !v)} style={s.eyeBtn}>
-            <Ionicons name={showPass ? 'eye-off-outline' : 'eye-outline'} size={18} color="#3A5568" />
+            <Ionicons name={showPass ? 'eye-off-outline' : 'eye-outline'} size={18} color="#6B5D4F" />
           </TouchableOpacity>
         </View>
 
         <Text style={[s.label, { marginTop: 16 }]}>CONFIRM PASSWORD</Text>
         <View style={s.inputWrap}>
-          <Ionicons name="lock-closed-outline" size={18} color="#3A5568" style={s.inputIcon} />
+          <Ionicons name="lock-closed-outline" size={18} color="#6B5D4F" style={s.inputIcon} />
           <TextInput
-            style={s.input} placeholder="Re-enter password" placeholderTextColor="#3A5568"
+            style={s.input} placeholder="Re-enter password" placeholderTextColor="#6B5D4F"
             value={confirmPass} onChangeText={setConfirm} secureTextEntry={!showPass}
           />
         </View>
@@ -209,7 +209,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
 
   return (
     <KeyboardAvoidingView style={s.root} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <LinearGradient colors={['#050A14', '#0D1B2A', '#121212']} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={['#0A0806', '#0F0D0A', '#0F0D0A']} style={StyleSheet.absoluteFill} />
 
       <TouchableOpacity style={s.backBtn} onPress={() => navigation.goBack()} activeOpacity={0.7}>
         <View style={s.backBtnInner}>
@@ -243,7 +243,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
 };
 
 const s = StyleSheet.create({
-  root: { flex: 1, backgroundColor: '#0D1B2A' },
+  root: { flex: 1, backgroundColor: '#0F0D0A' },
   backBtn: { position: 'absolute', top: SIZES.extraLarge * 1.8, left: SIZES.padding, zIndex: 10 },
   backBtnInner: {
     flexDirection: 'row', alignItems: 'center',
@@ -258,50 +258,50 @@ const s = StyleSheet.create({
   stepRow: { flexDirection: 'row', alignItems: 'center' },
   stepDot: {
     width: 32, height: 32, borderRadius: 16,
-    backgroundColor: '#0B1825', borderWidth: 1.5, borderColor: '#162535',
+    backgroundColor: '#1C1812', borderWidth: 1.5, borderColor: '#2E2820',
     justifyContent: 'center', alignItems: 'center',
   },
-  stepDotActive: { backgroundColor: '#00D2FF18', borderColor: '#00D2FF' },
-  stepNum: { fontSize: 13, color: '#3A5568', fontWeight: '700' },
-  stepNumActive: { color: '#00D2FF' },
-  stepLine: { width: 40, height: 1.5, backgroundColor: '#162535', marginHorizontal: 4 },
-  stepLineActive: { backgroundColor: '#00D2FF60' },
+  stepDotActive: { backgroundColor: '#F5A62318', borderColor: '#F5A623' },
+  stepNum: { fontSize: 13, color: '#6B5D4F', fontWeight: '700' },
+  stepNumActive: { color: '#F5A623' },
+  stepLine: { width: 40, height: 1.5, backgroundColor: '#2E2820', marginHorizontal: 4 },
+  stepLineActive: { backgroundColor: '#F5A62360' },
   iconWrap: { marginBottom: 20 },
   iconBg: { width: 80, height: 80, borderRadius: 24, justifyContent: 'center', alignItems: 'center', borderWidth: 1 },
-  title: { fontSize: 28, fontWeight: '900', color: '#D8EAF8', letterSpacing: 0.3, marginBottom: 8, textAlign: 'center' },
-  subtitle: { fontSize: 14, color: '#3A5568', textAlign: 'center', lineHeight: 22, marginBottom: SIZES.extraLarge },
+  title: { fontSize: 28, fontWeight: '900', color: '#F5EFE6', letterSpacing: 0.3, marginBottom: 8, textAlign: 'center' },
+  subtitle: { fontSize: 14, color: '#6B5D4F', textAlign: 'center', lineHeight: 22, marginBottom: SIZES.extraLarge },
   card: {
     width: '100%', backgroundColor: 'rgba(11,24,37,0.95)',
     padding: SIZES.padding, borderRadius: 20,
-    borderWidth: 1, borderColor: '#162535', marginBottom: SIZES.extraLarge,
+    borderWidth: 1, borderColor: '#2E2820', marginBottom: SIZES.extraLarge,
   },
-  label: { fontSize: 11, color: '#3A5568', fontWeight: '800', letterSpacing: 1.5, marginBottom: 8 },
+  label: { fontSize: 11, color: '#6B5D4F', fontWeight: '800', letterSpacing: 1.5, marginBottom: 8 },
   inputWrap: {
     flexDirection: 'row', alignItems: 'center',
-    backgroundColor: '#060E18', borderRadius: 14,
-    borderWidth: 1, borderColor: '#162535', paddingHorizontal: 14, marginBottom: 4,
+    backgroundColor: '#0F0D0A', borderRadius: 14,
+    borderWidth: 1, borderColor: '#2E2820', paddingHorizontal: 14, marginBottom: 4,
   },
   inputIcon: { marginRight: 10 },
-  input: { flex: 1, color: '#D8EAF8', fontSize: 15, paddingVertical: 14 },
+  input: { flex: 1, color: '#F5EFE6', fontSize: 15, paddingVertical: 14 },
   eyeBtn: { padding: 6 },
   otpRow: { flexDirection: 'row', justifyContent: 'space-between', marginVertical: 8 },
   otpBox: {
     width: 46, height: 56, borderRadius: 14,
-    backgroundColor: '#060E18', borderWidth: 1.5, borderColor: '#162535',
-    textAlign: 'center', fontSize: 22, fontWeight: '800', color: '#D8EAF8',
+    backgroundColor: '#0F0D0A', borderWidth: 1.5, borderColor: '#2E2820',
+    textAlign: 'center', fontSize: 22, fontWeight: '800', color: '#F5EFE6',
   },
-  otpBoxFilled: { borderColor: '#00D2FF', backgroundColor: '#00D2FF10' },
+  otpBoxFilled: { borderColor: '#F5A623', backgroundColor: '#F5A62310' },
   resendRow: { alignItems: 'center', marginTop: 16 },
-  resendTimer: { fontSize: 13, color: '#3A5568' },
-  resendLink: { fontSize: 13, color: '#3A5568' },
-  resendLinkBold: { color: '#00D2FF', fontWeight: '700' },
+  resendTimer: { fontSize: 13, color: '#6B5D4F' },
+  resendLink: { fontSize: 13, color: '#6B5D4F' },
+  resendLinkBold: { color: '#F5A623', fontWeight: '700' },
   changeRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 10 },
-  changeText: { fontSize: 13, color: '#3A5568' },
+  changeText: { fontSize: 13, color: '#6B5D4F' },
   strengthRow: { flexDirection: 'row', alignItems: 'center', marginTop: 10, gap: 4 },
-  strengthBar: { flex: 1, height: 4, borderRadius: 2, backgroundColor: '#162535' },
-  strengthLabel: { fontSize: 11, color: '#3A5568', marginLeft: 6, fontWeight: '700', width: 40 },
+  strengthBar: { flex: 1, height: 4, borderRadius: 2, backgroundColor: '#2E2820' },
+  strengthLabel: { fontSize: 11, color: '#6B5D4F', marginLeft: 6, fontWeight: '700', width: 40 },
   loginRow: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 8 },
-  loginText: { fontSize: 14, color: '#3A5568' },
+  loginText: { fontSize: 14, color: '#6B5D4F' },
   loginLink: { fontSize: 14, color: COLORS.primary, fontWeight: '700' },
 });
 

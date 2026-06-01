@@ -65,7 +65,7 @@ const SplashScreen = ({ onFinish }) => {
   return (
     <Animated.View style={[styles.container, { opacity: screenFade }]}>
       <LinearGradient
-        colors={['#050A14', '#0D1B2A', '#121212']}
+        colors={['#0A0806', '#0F0D0A', '#0F0D0A']}
         style={StyleSheet.absoluteFill}
       />
 
@@ -83,7 +83,7 @@ const SplashScreen = ({ onFinish }) => {
         { transform: [{ scale: iconScale }, { rotate }], opacity: iconOpacity }
       ]}>
         <LinearGradient
-          colors={[COLORS.primary, '#0066CC', COLORS.secondary]}
+          colors={[COLORS.primary, '#C4500F', COLORS.secondary]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.iconGradient}
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#0D1B2A',
+    backgroundColor: '#0F0D0A',
   },
   ring: {
     position: 'absolute',

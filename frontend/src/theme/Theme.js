@@ -1,14 +1,20 @@
+// ── HunarHub Premium Palette — Midnight Amber ────────────────────────────────
+// Inspired by: Uber, Revolut, premium fintech apps
+// Primary:   #F5A623  (Warm Amber Gold)
+// Secondary: #E8621A  (Deep Coral Orange)
+// Dark bg:   #0D0D0D → #1A1208  (Near-black with warm undertone)
+
 export const COLORS = {
-  background: '#121212', // Dark background
-  card: '#1E1E1E',       // Slightly lighter card background
-  primary: '#00D2FF',    // Vivid cyan primary
-  secondary: '#3A7BD5',  // Vivid blue secondary
-  text: '#FFFFFF',       // Primary text
-  textSecondary: '#A0A0A0', // Secondary text
-  border: '#2C2C2C',     // Subtle border
-  error: '#FF4C4C',      // Error red
-  success: '#00E676',    // Success green
-  warning: '#FFC107',    // Warning yellow
+  background:    '#0F0D0A',   // Near-black warm dark
+  card:          '#1C1812',   // Warm dark card
+  primary:       '#F5A623',   // Amber gold — main brand color
+  secondary:     '#E8621A',   // Coral orange — accent
+  text:          '#F5EFE6',   // Warm white
+  textSecondary: '#8A7D6B',   // Warm muted
+  border:        '#2E2820',   // Warm dark border
+  error:         '#FF4C4C',   // Red
+  success:       '#2ECC71',   // Green
+  warning:       '#F5A623',   // Same as primary amber
 };
 
 export const SIZES = {

@@ -92,7 +92,7 @@ const ChatScreen = ({ navigation, route }) => {
           <Text style={styles.backText}>Back</Text>
         </TouchableOpacity>
         <View style={styles.headerCenter}>
-          <LinearGradient colors={['#00D2FF25', '#3A7BD520']} style={styles.headerAv}>
+          <LinearGradient colors={['#F5A62325', '#E8621A20']} style={styles.headerAv}>
             <Text style={styles.headerAvTxt}>{workerName.charAt(0).toUpperCase()}</Text>
           </LinearGradient>
           <Text style={styles.headerTitle}>{workerName}</Text>
@@ -116,7 +116,7 @@ const ChatScreen = ({ navigation, route }) => {
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={
             <View style={styles.emptyWrap}>
-              <Ionicons name="chatbubbles-outline" size={48} color="#3A5568" style={{ marginBottom: 12 }} />
+              <Ionicons name="chatbubbles-outline" size={48} color="#6B5D4F" style={{ marginBottom: 12 }} />
               <Text style={styles.emptyTitle}>No messages yet</Text>
               <Text style={styles.emptyTxt}>Say hello to {workerName}</Text>
             </View>
@@ -158,8 +158,8 @@ const styles = StyleSheet.create({
   backBtn:      { flexDirection: 'row', alignItems: 'center', padding: SIZES.small, minWidth: 60 },
   backText:     { ...FONTS.body, color: COLORS.primary, fontWeight: '700', marginLeft: 2 },
   headerCenter: { flexDirection: 'row', alignItems: 'center', flex: 1, justifyContent: 'center' },
-  headerAv:     { width: 36, height: 36, borderRadius: 18, justifyContent: 'center', alignItems: 'center', marginRight: 8, borderWidth: 1, borderColor: '#00D2FF30' },
-  headerAvTxt:  { fontSize: 15, fontWeight: '800', color: '#00D2FF' },
+  headerAv:     { width: 36, height: 36, borderRadius: 18, justifyContent: 'center', alignItems: 'center', marginRight: 8, borderWidth: 1, borderColor: '#F5A62330' },
+  headerAvTxt:  { fontSize: 15, fontWeight: '800', color: '#F5A623' },
   headerTitle:  { ...FONTS.large, color: COLORS.text, fontWeight: 'bold' },
   loadingWrap:  { flex: 1, justifyContent: 'center', alignItems: 'center' },
   loadingTxt:   { color: COLORS.textSecondary, marginTop: 12, fontSize: 14 },
