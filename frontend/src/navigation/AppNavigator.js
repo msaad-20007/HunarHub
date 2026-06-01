@@ -17,6 +17,7 @@ import BookingScreen       from '../screens/customer/BookingScreen';
 import ChatScreen          from '../screens/customer/ChatScreen';
 import ProfileScreen       from '../screens/customer/ProfileScreen';
 import SearchScreen        from '../screens/customer/SearchScreen';
+import ChangePasswordScreen from '../screens/shared/ChangePasswordScreen';
 
 import WorkerDashboard from '../screens/worker/WorkerDashboard';
 import AdminDashboard  from '../screens/admin/AdminDashboard';
@@ -109,15 +110,21 @@ const AppNavigator = () => {
             </>
           ) : userRole === 'CUSTOMER' ? (
             <>
-              <Stack.Screen name="CustomerHome"   component={CustomerHomeScreen} />
-              <Stack.Screen name="WorkerDetails"  component={WorkerDetailsScreen} options={{ animation: 'slide_from_right' }} />
-              <Stack.Screen name="Booking"        component={BookingScreen}       options={{ animation: 'slide_from_right' }} />
-              <Stack.Screen name="Chat"           component={ChatScreen}          options={{ animation: 'slide_from_right' }} />
-              <Stack.Screen name="Profile"        component={ProfileScreen}       options={{ animation: 'slide_from_right' }} />
-              <Stack.Screen name="Search"         component={SearchScreen}        options={{ animation: 'slide_from_right' }} />
+              <Stack.Screen name="CustomerHome"    component={CustomerHomeScreen} />
+              <Stack.Screen name="WorkerDetails"   component={WorkerDetailsScreen} options={{ animation: 'slide_from_right' }} />
+              <Stack.Screen name="Booking"         component={BookingScreen}       options={{ animation: 'slide_from_right' }} />
+              <Stack.Screen name="Chat"            component={ChatScreen}          options={{ animation: 'slide_from_right' }} />
+              <Stack.Screen name="Profile"         component={ProfileScreen}       options={{ animation: 'slide_from_right' }} />
+              <Stack.Screen name="Search"          component={SearchScreen}        options={{ animation: 'slide_from_right' }} />
+              <Stack.Screen name="ChangePassword"  component={ChangePasswordScreen} options={{ animation: 'slide_from_right' }} />
+              <Stack.Screen name="ForgotPassword"  component={ForgotPasswordScreen} options={{ animation: 'slide_from_right' }} />
             </>
           ) : userRole === 'WORKER' ? (
-            <Stack.Screen name="WorkerDashboard" component={WorkerDashboard} />
+            <>
+              <Stack.Screen name="WorkerDashboard" component={WorkerDashboard} />
+              <Stack.Screen name="ChangePassword"  component={ChangePasswordScreen} options={{ animation: 'slide_from_right' }} />
+              <Stack.Screen name="ForgotPassword"  component={ForgotPasswordScreen} options={{ animation: 'slide_from_right' }} />
+            </>
           ) : userRole === 'ADMIN' ? (
             <Stack.Screen name="AdminDashboard"  component={AdminDashboard} />
           ) : (

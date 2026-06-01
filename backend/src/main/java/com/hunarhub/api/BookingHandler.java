@@ -161,21 +161,42 @@ public class BookingHandler implements HttpHandler {
                 // Notify worker via email (non-critical — never fail the booking if email fails)
                 try {
                     PreparedStatement wstmt = conn.prepareStatement(
-                        "SELECT u.email, u.name, u.city FROM users u " +
+                        "SELECT u.email, u.name, u.city, w.category FROM users u " +
                         "JOIN workers w ON u.id = w.user_id WHERE w.worker_id = ?");
                     wstmt.setInt(1, workerId);
                     ResultSet wrs = wstmt.executeQuery();
                     if (wrs.next()) {
-                        // Also get customer name
-                        PreparedStatement cname = conn.prepareStatement(
-                            "SELECT u.name FROM users u JOIN customers c ON u.id = c.user_id WHERE c.user_id = ?");
-                        cname.setInt(1, customerId);
-                        ResultSet cnrs = cname.executeQuery();
-                        String custName = cnrs.next() ? cnrs.getString("name") : "A customer";
-                        String dateStr  = scheduledAt != null ? scheduledAt : new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm").format(new java.util.Date());
+                        String workerEmail    = wrs.getString("email");
+                        String workerName     = wrs.getString("name");
+                        String workerCity     = wrs.getString("city") != null ? wrs.getString("city") : "";
+                        String workerCategory = wrs.getString("category") != null ? wrs.getString("category") : "N/A";
+
+                        // Get customer name + email
+                        PreparedStatement cinfo = conn.prepareStatement(
+                            "SELECT u.name, u.email FROM users u WHERE u.id = ?");
+                        cinfo.setInt(1, customerId);
+                        ResultSet cirs = cinfo.executeQuery();
+                        String custName  = "A customer";
+                        String custEmail = null;
+                        if (cirs.next()) {
+                            custName  = cirs.getString("name");
+                            custEmail = cirs.getString("email");
+                        }
+
+                        String dateStr = scheduledAt != null && !scheduledAt.isEmpty()
+                            ? scheduledAt
+                            : new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm").format(new java.util.Date());
+
+                        // Email to worker — new booking notification
                         EmailSender.sendNewBookingToWorker(
-                            wrs.getString("email"), wrs.getString("name"),
-                            custName, type, newBookingId, dateStr);
+                            workerEmail, workerName, custName, type, newBookingId, dateStr);
+
+                        // Email to customer — booking placed confirmation
+                        if (custEmail != null) {
+                            EmailSender.sendBookingPlacedToCustomer(
+                                custEmail, custName, workerName, workerCategory,
+                                workerCity, type, newBookingId, dateStr);
+                        }
                     }
                 } catch (Exception emailEx) {
                     System.err.println("Email notification failed (non-fatal): " + emailEx.getMessage());

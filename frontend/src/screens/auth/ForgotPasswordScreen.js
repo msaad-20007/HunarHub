@@ -189,6 +189,9 @@ const ForgotPasswordScreen = ({ navigation }) => {
             style={s.input} placeholder="Re-enter password" placeholderTextColor="#6B6880"
             value={confirmPass} onChangeText={setConfirm} secureTextEntry={!showPass}
           />
+          <TouchableOpacity onPress={() => setShowPass(v => !v)} style={s.eyeBtn}>
+            <Ionicons name={showPass ? 'eye-off-outline' : 'eye-outline'} size={18} color="#6B6880" />
+          </TouchableOpacity>
         </View>
 
         {newPass.length > 0 && (

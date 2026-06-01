@@ -145,7 +145,48 @@ public class AuthHandler {
                     responseJson.put("userId", user.getId());
                     responseJson.put("name", user.getName());
                     responseJson.put("role", user.getRole());
-                    
+
+                    // If worker logs in, send pending bookings summary email (non-fatal)
+                    if ("WORKER".equals(user.getRole())) {
+                        try (java.sql.Connection conn = com.hunarhub.db.DatabaseConnection.getConnection()) {
+                            // Get worker_id from workers table
+                            java.sql.PreparedStatement wps = conn.prepareStatement(
+                                "SELECT worker_id FROM workers WHERE user_id = ?");
+                            wps.setInt(1, user.getId());
+                            java.sql.ResultSet wrs = wps.executeQuery();
+                            if (wrs.next()) {
+                                int workerId = wrs.getInt("worker_id");
+                                // Fetch pending bookings
+                                java.sql.PreparedStatement bps = conn.prepareStatement(
+                                    "SELECT b.booking_id, u.name AS customer_name, b.type, b.booking_date " +
+                                    "FROM bookings b " +
+                                    "JOIN customers c ON b.customer_id = c.customer_id " +
+                                    "JOIN users u ON c.user_id = u.id " +
+                                    "WHERE b.worker_id = ? AND b.status = 'PENDING' " +
+                                    "ORDER BY b.booking_date ASC");
+                                bps.setInt(1, workerId);
+                                java.sql.ResultSet brs = bps.executeQuery();
+                                java.util.List<String[]> pending = new java.util.ArrayList<>();
+                                while (brs.next()) {
+                                    pending.add(new String[]{
+                                        String.valueOf(brs.getInt("booking_id")),
+                                        brs.getString("customer_name"),
+                                        brs.getString("type"),
+                                        brs.getString("booking_date") != null
+                                            ? brs.getString("booking_date").replace("T", " ").substring(0, Math.min(16, brs.getString("booking_date").length()))
+                                            : "N/A"
+                                    });
+                                }
+                                if (!pending.isEmpty()) {
+                                    EmailSender.sendPendingBookingSummaryToWorker(
+                                        user.getEmail(), user.getName(), pending);
+                                }
+                            }
+                        } catch (Exception emailEx) {
+                            System.err.println("Pending summary email failed (non-fatal): " + emailEx.getMessage());
+                        }
+                    }
+
                     sendResponse(exchange, 200, responseJson.toString());
                 } else {
                     sendResponse(exchange, 401, "{\"error\": \"Invalid credentials\"}");

@@ -42,7 +42,7 @@ public class UserHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        String path = exchange.getRequestURI().getPath(); // /api/users/{id}
+        String path = exchange.getRequestURI().getPath(); // /api/users/{id}[/change-password]
         String[] parts = path.split("/");
         if (parts.length < 4) {
             sendResponse(exchange, 400, "{\"error\":\"Missing user ID\"}");
@@ -56,6 +56,13 @@ public class UserHandler implements HttpHandler {
         }
 
         String method = exchange.getRequestMethod();
+
+        // POST /api/users/{id}/change-password
+        if ("POST".equals(method) && path.endsWith("/change-password")) {
+            handleChangePassword(exchange, userId);
+            return;
+        }
+
         if ("GET".equals(method)) {
             handleGetProfile(exchange, userId);
         } else if ("PUT".equals(method)) {
@@ -69,7 +76,7 @@ public class UserHandler implements HttpHandler {
     private void handleGetProfile(HttpExchange exchange, int userId) throws IOException {
         try (Connection conn = DatabaseConnection.getConnection()) {
             PreparedStatement ps = conn.prepareStatement(
-                "SELECT id, name, email, phone, city, dob, role FROM users WHERE id = ?");
+                "SELECT id, name, email, phone, address_city, address_street, address_zip, dob, role FROM users WHERE id = ?");
             ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
 
@@ -79,13 +86,16 @@ public class UserHandler implements HttpHandler {
             }
 
             JSONObject user = new JSONObject();
-            user.put("id",    rs.getInt("id"));
-            user.put("name",  rs.getString("name"));
-            user.put("email", rs.getString("email"));
-            user.put("phone", rs.getString("phone") != null ? rs.getString("phone") : "");
-            user.put("city",  rs.getString("city")  != null ? rs.getString("city")  : "");
-            user.put("dob",   rs.getString("dob")   != null ? rs.getString("dob")   : "");
-            user.put("role",  rs.getString("role"));
+            user.put("id",             rs.getInt("id"));
+            user.put("name",           rs.getString("name"));
+            user.put("email",          rs.getString("email"));
+            user.put("phone",          rs.getString("phone")          != null ? rs.getString("phone")          : "");
+            user.put("city",           rs.getString("address_city")   != null ? rs.getString("address_city")   : "");
+            user.put("address_street", rs.getString("address_street") != null ? rs.getString("address_street") : "");
+            user.put("address_city",   rs.getString("address_city")   != null ? rs.getString("address_city")   : "");
+            user.put("address_zip",    rs.getString("address_zip")    != null ? rs.getString("address_zip")    : "");
+            user.put("dob",            rs.getString("dob")            != null ? rs.getString("dob")            : "");
+            user.put("role",           rs.getString("role"));
 
             String role = rs.getString("role");
 
@@ -116,11 +126,14 @@ public class UserHandler implements HttpHandler {
     private void handleUpdateProfile(HttpExchange exchange, int userId) throws IOException {
         try {
             JSONObject json = new JSONObject(getRequestBody(exchange));
-            String name  = json.optString("name",  null);
-            String phone = json.optString("phone", null);
-            String city  = json.optString("city",  null);
+            String name           = json.optString("name",           null);
+            String phone          = json.optString("phone",          null);
+            String city           = json.optString("city",           null);
+            String addressStreet  = json.optString("address_street", null);
+            String addressCity    = json.optString("address_city",   city); // fallback to city
+            String addressZip     = json.optString("address_zip",    null);
 
-            if (name == null && phone == null && city == null) {
+            if (name == null && phone == null && city == null && addressStreet == null && addressZip == null) {
                 sendResponse(exchange, 400, "{\"error\":\"No fields to update\"}");
                 return;
             }
@@ -129,26 +142,67 @@ public class UserHandler implements HttpHandler {
                 StringBuilder sql = new StringBuilder("UPDATE users SET ");
                 java.util.List<Object> params = new java.util.ArrayList<>();
 
-                if (name  != null) { sql.append("name = ?, ");  params.add(name); }
-                if (phone != null) { sql.append("phone = ?, "); params.add(phone); }
-                if (city  != null) { sql.append("city = ?, ");  params.add(city); }
+                if (name         != null) { sql.append("name = ?, ");           params.add(name); }
+                if (phone        != null) { sql.append("phone = ?, ");          params.add(phone); }
+                if (addressCity  != null) { sql.append("address_city = ?, ");   params.add(addressCity); }
+                if (addressStreet!= null) { sql.append("address_street = ?, "); params.add(addressStreet); }
+                if (addressZip   != null) { sql.append("address_zip = ?, ");    params.add(addressZip); }
 
-                // Remove trailing ", "
                 sql.setLength(sql.length() - 2);
                 sql.append(" WHERE id = ?");
                 params.add(userId);
 
                 PreparedStatement ps = conn.prepareStatement(sql.toString());
-                for (int i = 0; i < params.size(); i++) {
-                    ps.setObject(i + 1, params.get(i));
-                }
+                for (int i = 0; i < params.size(); i++) ps.setObject(i + 1, params.get(i));
                 int rows = ps.executeUpdate();
 
-                if (rows > 0) {
-                    sendResponse(exchange, 200, "{\"message\":\"Profile updated successfully\"}");
-                } else {
+                if (rows > 0) sendResponse(exchange, 200, "{\"message\":\"Profile updated successfully\"}");
+                else          sendResponse(exchange, 404, "{\"error\":\"User not found\"}");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            sendResponse(exchange, 400, "{\"error\":\"" + e.getMessage() + "\"}");
+        }
+    }
+
+    // ── POST /api/users/{id}/change-password ──────────────────────────────────
+    private void handleChangePassword(HttpExchange exchange, int userId) throws IOException {
+        try {
+            JSONObject json        = new JSONObject(getRequestBody(exchange));
+            String currentPassword = json.getString("currentPassword");
+            String newPassword     = json.getString("newPassword");
+
+            if (newPassword == null || newPassword.trim().length() < 6) {
+                sendResponse(exchange, 400, "{\"error\":\"New password must be at least 6 characters\"}");
+                return;
+            }
+
+            try (Connection conn = DatabaseConnection.getConnection()) {
+                // Verify current password
+                PreparedStatement check = conn.prepareStatement(
+                    "SELECT password FROM users WHERE id = ?");
+                check.setInt(1, userId);
+                ResultSet rs = check.executeQuery();
+
+                if (!rs.next()) {
                     sendResponse(exchange, 404, "{\"error\":\"User not found\"}");
+                    return;
                 }
+
+                String storedPassword = rs.getString("password");
+                if (!storedPassword.equals(currentPassword)) {
+                    sendResponse(exchange, 401, "{\"error\":\"Current password is incorrect\"}");
+                    return;
+                }
+
+                // Update to new password
+                PreparedStatement update = conn.prepareStatement(
+                    "UPDATE users SET password = ? WHERE id = ?");
+                update.setString(1, newPassword.trim());
+                update.setInt(2, userId);
+                update.executeUpdate();
+
+                sendResponse(exchange, 200, "{\"message\":\"Password changed successfully\"}");
             }
         } catch (Exception e) {
             e.printStackTrace();

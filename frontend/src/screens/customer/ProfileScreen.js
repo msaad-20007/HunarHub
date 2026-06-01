@@ -127,7 +127,11 @@ const ProfileScreen = ({ navigation }) => {
             <View style={s.section}>
               <Text style={s.sectionTitle}>ACCOUNT</Text>
               <View style={s.accountCard}>
-                <TouchableOpacity style={s.accountRow} activeOpacity={0.7}>
+                <TouchableOpacity
+                  style={s.accountRow}
+                  onPress={() => navigation.navigate('ChangePassword')}
+                  activeOpacity={0.7}
+                >
                   <View style={s.accountIconBox}>
                     <Ionicons name="lock-closed-outline" size={18} color="#A855F7" />
                   </View>

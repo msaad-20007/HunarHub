@@ -260,7 +260,7 @@ const ChatTab = ({ workerId }) => {
 };
 
 // ── Profile Tab ───────────────────────────────────────────────────────────────
-const ProfileTab = ({ profile, workerId, onProfileUpdated }) => {
+const ProfileTab = ({ profile, workerId, onProfileUpdated, onChangePassword }) => {
   const [editing, setEditing] = useState(false);
   const [saving, setSaving]   = useState(false);
   const [form, setForm]       = useState({ name: '', phone: '', city: '' });
@@ -375,13 +375,25 @@ const ProfileTab = ({ profile, workerId, onProfileUpdated }) => {
           </View>
         ))}
       </View>
+
+      {/* Account actions */}
+      <View style={$.accountCard}>
+        <TouchableOpacity style={$.accountRow} onPress={onChangePassword} activeOpacity={0.7}>
+          <View style={[$.accountIconBox, { backgroundColor: '#7C3AED12', borderColor: '#7C3AED25' }]}>
+            <Ionicons name="lock-closed-outline" size={18} color="#7C3AED" />
+          </View>
+          <Text style={$.accountTxt}>Change Password</Text>
+          <Ionicons name="chevron-forward" size={18} color="#6B6880" />
+        </TouchableOpacity>
+      </View>
+
       <View style={{ height: 40 }} />
     </ScrollView>
   );
 };
 
 // ── Main Dashboard ────────────────────────────────────────────────────────────
-const WorkerDashboard = () => {
+const WorkerDashboard = ({ navigation }) => {
   const [showIntro, setShowIntro]   = useState(true);
   const [activeTab, setActiveTab]   = useState('requests');
   const [requests, setRequests]     = useState([]);
@@ -447,7 +459,7 @@ const WorkerDashboard = () => {
     if (loading && !refreshing && activeTab !== 'chats') {
       return <View style={$.emptyWrap}><ActivityIndicator size="large" color={COLORS.primary} /><Text style={$.emptyTxt}>Loading...</Text></View>;
     }
-    if (activeTab === 'profile') return <ProfileTab profile={profile} workerId={workerId} onProfileUpdated={reloadProfile} />;
+    if (activeTab === 'profile') return <ProfileTab profile={profile} workerId={workerId} onProfileUpdated={reloadProfile} onChangePassword={() => navigation.navigate('ChangePassword')} />;
     if (activeTab === 'chats')   return <ChatTab workerId={workerId} />;
 
     const data        = activeTab === 'requests' ? requests : history;
@@ -601,6 +613,10 @@ const $ = StyleSheet.create({
   profileRowLabel:   { fontSize: 11, color: '#6B6880', fontWeight: '700', letterSpacing: 0.5, marginBottom: 2 },
   profileRowValue:   { fontSize: 15, color: '#F1F0F5', fontWeight: '500' },
   profileEditInput:  { fontSize: 15, color: '#F1F0F5', fontWeight: '500', borderBottomWidth: 1, borderBottomColor: '#7C3AED40', paddingVertical: 4, paddingHorizontal: 2 },
+  accountCard:    { marginHorizontal: 20, marginBottom: 12, backgroundColor: '#13111C', borderRadius: 14, borderWidth: 1, borderColor: '#2D2640', overflow: 'hidden' },
+  accountRow:     { flexDirection: 'row', alignItems: 'center', padding: 16 },
+  accountIconBox: { width: 36, height: 36, borderRadius: 10, justifyContent: 'center', alignItems: 'center', marginRight: 14 },
+  accountTxt:     { flex: 1, fontSize: 15, color: '#F1F0F5', fontWeight: '600' },
   nav:              { flexDirection: 'row', backgroundColor: '#0A0A0F', borderTopWidth: 1, borderTopColor: '#2D2640', paddingBottom: 8, paddingTop: 4 },
   navItem:          { flex: 1, alignItems: 'center', paddingVertical: 8, position: 'relative', overflow: 'hidden' },
   navGlow:          { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },

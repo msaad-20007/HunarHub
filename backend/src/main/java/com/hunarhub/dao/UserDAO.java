@@ -11,14 +11,14 @@ public class UserDAO {
         String sql = "SELECT * FROM users WHERE email = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            
+
             pstmt.setString(1, email);
             ResultSet rs = pstmt.executeQuery();
-            
+
             if (rs.next()) {
-                // Using an anonymous subclass for instantiation just for basic user details, 
-                // typically we'd return a specific Worker/Customer/Admin
                 final String role = rs.getString("role");
+                // address_city used as the city field for backward compatibility
+                String city = rs.getString("address_city");
                 return new User(
                     rs.getInt("id"),
                     rs.getString("name"),
@@ -26,13 +26,11 @@ public class UserDAO {
                     rs.getString("password"),
                     rs.getString("phone"),
                     rs.getDate("dob"),
-                    rs.getString("city"),
+                    city != null ? city : "",
                     role
                 ) {
                     @Override
-                    public String getRoleDescription() {
-                        return role;
-                    }
+                    public String getRoleDescription() { return role; }
                 };
             }
         } catch (SQLException e) {
@@ -42,10 +40,11 @@ public class UserDAO {
     }
 
     public int createUser(User user) {
-        String sql = "INSERT INTO users (name, email, password, phone, dob, city, role) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (name, email, password, phone, dob, address_city, role) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            
+
             pstmt.setString(1, user.getName());
             pstmt.setString(2, user.getEmail());
             pstmt.setString(3, user.getPassword());
@@ -53,13 +52,12 @@ public class UserDAO {
             pstmt.setDate(5, user.getDob() != null ? new java.sql.Date(user.getDob().getTime()) : null);
             pstmt.setString(6, user.getCity());
             pstmt.setString(7, user.getRole());
-            
+
             pstmt.executeUpdate();
-            
+
             ResultSet rs = pstmt.getGeneratedKeys();
-            if (rs.next()) {
-                return rs.getInt(1);
-            }
+            if (rs.next()) return rs.getInt(1);
+
         } catch (SQLException e) {
             e.printStackTrace();
         }

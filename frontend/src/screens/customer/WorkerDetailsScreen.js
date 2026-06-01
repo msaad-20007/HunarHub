@@ -164,7 +164,14 @@ const WorkerDetailsScreen = ({ navigation, route }) => {
 
           {/* Actions */}
           <View style={s.actions}>
-            <GradientButton title="Book Now" onPress={() => navigation.navigate('Booking', { worker })} style={{ marginBottom: SIZES.base }} />
+            {isApproved ? (
+              <GradientButton title="Book Now" onPress={() => navigation.navigate('Booking', { worker })} style={{ marginBottom: SIZES.base }} />
+            ) : (
+              <View style={s.disabledBtn}>
+                <Ionicons name="time-outline" size={18} color="#FFC107" style={{ marginRight: 8 }} />
+                <Text style={s.disabledBtnTxt}>Booking Unavailable — Pending Approval</Text>
+              </View>
+            )}
             <TouchableOpacity style={s.chatBtn} onPress={() => navigation.navigate('Chat', { worker })} activeOpacity={0.8}>
               <Ionicons name="chatbubble-outline" size={18} color="#7C3AED" style={{ marginRight: 8 }} />
               <Text style={s.chatTxt}>Send Message</Text>
@@ -232,6 +239,12 @@ const s = StyleSheet.create({
     padding: SIZES.padding, backgroundColor: '#7C3AED08',
   },
   chatTxt: { color: '#7C3AED', fontWeight: '700', fontSize: 16 },
+  disabledBtn: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
+    borderWidth: 1.5, borderColor: '#FFC10740', borderRadius: SIZES.radius,
+    padding: SIZES.padding, backgroundColor: '#FFC10710', marginBottom: SIZES.base,
+  },
+  disabledBtnTxt: { color: '#FFC107', fontWeight: '600', fontSize: 14 },
 });
 
 export default WorkerDetailsScreen;

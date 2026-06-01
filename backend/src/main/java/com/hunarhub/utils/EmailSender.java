@@ -11,7 +11,7 @@ import javax.mail.internet.*;
 public class EmailSender {
 
     private static final String SMTP_HOST     = "smtp.gmail.com";
-    private static final String SMTP_PORT     = "587";
+    private static final String SMTP_PORT     = "465";   // SSL port (587 STARTTLS is ISP-blocked)
     private static final String EMAIL_USERNAME = "hello.hunarhub@gmail.com";
     private static final String EMAIL_PASSWORD = "jryl bpdp jstr nlij";
     private static final String FROM_NAME      = "HunarHub";
@@ -19,11 +19,14 @@ public class EmailSender {
     // ── Core send ─────────────────────────────────────────────────────────────
     private static void send(String toEmail, String subject, String htmlBody) {
         Properties props = new Properties();
-        props.put("mail.smtp.auth",            "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host",            SMTP_HOST);
-        props.put("mail.smtp.port",            SMTP_PORT);
-        props.put("mail.smtp.ssl.trust",       SMTP_HOST);
+        props.put("mail.smtp.auth",              "true");
+        props.put("mail.smtp.ssl.enable",        "true");   // SSL on port 465
+        props.put("mail.smtp.host",              SMTP_HOST);
+        props.put("mail.smtp.port",              SMTP_PORT);
+        props.put("mail.smtp.ssl.trust",         SMTP_HOST);
+        props.put("mail.smtp.connectiontimeout", "10000");
+        props.put("mail.smtp.timeout",           "10000");
+        props.put("mail.smtp.writetimeout",      "10000");
 
         Session session = Session.getInstance(props, new Authenticator() {
             @Override
@@ -165,6 +168,68 @@ public class EmailSender {
             "<p class='text'>If you believe this is a mistake or would like to reapply with updated information, " +
             "please contact our support team at <span class='highlight'>hello.hunarhub@gmail.com</span>.</p>";
         send(toEmail, "HunarHub — Application Status Update", wrap("#FF4C4C", "❌", "Rejected", body));
+    }
+
+    // ── 5a. Booking Placed Confirmation (to Customer) ─────────────────────────
+    public static void sendBookingPlacedToCustomer(String toEmail, String customerName,
+            String workerName, String workerCategory, String workerCity,
+            String bookingType, int bookingId, String bookingDate) {
+        String typeColor = "URGENT".equals(bookingType) ? "#FF4C4C"
+                         : "ADVANCE".equals(bookingType) ? "#A855F7" : "#00D2FF";
+        String typeNote  = "URGENT".equals(bookingType)
+                         ? "⚡ This is an <b>URGENT</b> request — the worker has been notified immediately."
+                         : "ADVANCE".equals(bookingType)
+                         ? "📅 This is an <b>ADVANCE</b> booking scheduled for the date below."
+                         : "📋 This is a <b>NORMAL</b> booking. The worker will respond shortly.";
+        String body =
+            "<p class='greeting'>Booking Placed! 📋</p>" +
+            "<p class='text'>Hi <span class='highlight'>" + customerName + "</span>, your booking request has been sent to " +
+            "<span class='highlight'>" + workerName + "</span> and is currently <span style='color:#FFC107;font-weight:700;'>PENDING</span> their response.</p>" +
+            "<div class='divider'></div>" +
+            "<div class='info-box'>" +
+            "  <div class='info-row'><span class='info-icon'>#</span><div><div class='info-label'>Booking ID</div><div class='info-value'>#" + bookingId + "</div></div></div>" +
+            "  <div class='info-row'><span class='info-icon'>🔧</span><div><div class='info-label'>Worker</div><div class='info-value'>" + workerName + "</div></div></div>" +
+            "  <div class='info-row'><span class='info-icon'>🛠️</span><div><div class='info-label'>Service</div><div class='info-value'>" + workerCategory + "</div></div></div>" +
+            (workerCity != null && !workerCity.isEmpty()
+              ? "  <div class='info-row'><span class='info-icon'>📍</span><div><div class='info-label'>Worker City</div><div class='info-value'>" + workerCity + "</div></div></div>"
+              : "") +
+            "  <div class='info-row'><span class='info-icon'>📅</span><div><div class='info-label'>Date &amp; Time</div><div class='info-value'>" + bookingDate + "</div></div></div>" +
+            "  <div class='info-row'><span class='info-icon'>🏷️</span><div><div class='info-label'>Booking Type</div><div class='info-value'><span style='color:" + typeColor + ";font-weight:700;'>" + bookingType + "</span></div></div></div>" +
+            "  <div class='info-row'><span class='info-icon'>⏳</span><div><div class='info-label'>Status</div><div class='info-value'><span style='color:#FFC107;font-weight:700;'>PENDING</span></div></div></div>" +
+            "</div>" +
+            "<p class='text'>" + typeNote + "</p>" +
+            "<p class='text'>You will receive another email once the worker <b>accepts</b> or <b>rejects</b> your request. Stay tuned!</p>";
+        send(toEmail, "Booking #" + bookingId + " Placed — Awaiting Worker Response ⏳",
+             wrap(typeColor, "📋", "Booking Placed", body));
+    }
+
+    // ── 5b. Pending Bookings Summary (to Worker) ──────────────────────────────
+    public static void sendPendingBookingSummaryToWorker(String toEmail, String workerName,
+            java.util.List<String[]> pendingBookings) {
+        // Each String[] = { bookingId, customerName, type, bookingDate }
+        StringBuilder rows = new StringBuilder();
+        for (String[] b : pendingBookings) {
+            String tc = "URGENT".equals(b[2]) ? "#FF4C4C" : "ADVANCE".equals(b[2]) ? "#A855F7" : "#00D2FF";
+            rows.append(
+                "<div class='info-row'>" +
+                "<span class='info-icon'>📋</span>" +
+                "<div style='flex:1'>" +
+                "  <div class='info-label'>Booking #" + b[0] + " — <span style='color:" + tc + ";'>" + b[2] + "</span></div>" +
+                "  <div class='info-value'>" + b[1] + " &nbsp;·&nbsp; " + b[3] + "</div>" +
+                "</div></div>"
+            );
+        }
+        String body =
+            "<p class='greeting'>You have " + pendingBookings.size() + " pending booking" +
+            (pendingBookings.size() > 1 ? "s" : "") + "! ⏳</p>" +
+            "<p class='text'>Hello <span class='highlight'>" + workerName + "</span>, " +
+            "the following booking requests are waiting for your response on HunarHub.</p>" +
+            "<div class='divider'></div>" +
+            "<div class='info-box'>" + rows + "</div>" +
+            "<p class='text'>Please open your <span class='highlight'>Worker Dashboard</span> to accept or reject each request. " +
+            "Responding quickly improves your rating and helps customers!</p>";
+        send(toEmail, "You have " + pendingBookings.size() + " pending booking request(s) — HunarHub ⏳",
+             wrap("#FFC107", "⏳", "Pending Bookings", body));
     }
 
     // ── 5. New Booking Request (to Worker) ────────────────────────────────────

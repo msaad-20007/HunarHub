@@ -1,98 +1,226 @@
-# HunarHub - Premium Local Service Hiring Platform
+# HunarHub — Premium Local Service Hiring Platform
 
-HunarHub is a complete full-stack mobile application that connects customers with local Pakistani workers (Plumbers, Electricians, Painters, Mechanics, etc.). Built with a modern **React Native (Expo)** frontend and a lightweight **Java OOP** backend without complex enterprise frameworks.
+HunarHub is a full-stack mobile application connecting customers with verified local Pakistani workers (Plumbers, Electricians, Painters, Mechanics, etc.). Built with **React Native (Expo)** frontend and a pure **Java OOP** backend using core `HttpServer` + JDBC — no Spring, no frameworks.
+
+---
 
 ## 🌟 Features
-* **Premium UI/UX:** Dark mode, gradients, and micro-animations.
-* **Role-based Portals:** Distinct workflows for Admins, Workers, and Customers.
-* **Smart Booking System:** Support for `NORMAL`, `ADVANCE`, and `URGENT` bookings.
-* **Automated Emails:** SMTP integration for registration welcomes and worker booking alerts.
-* **Java Core Backend:** Built entirely with core Java `HttpServer` and pure JDBC for maximum OOP learning.
+
+- **Premium UI/UX** — Dark mode, gradients, micro-animations
+- **Role-based Portals** — Separate flows for Admin, Worker, and Customer
+- **Smart Booking System** — NORMAL, ADVANCE, and URGENT booking types
+- **Real-time Chat** — In-app messaging between customers and workers
+- **Worker Approval Flow** — Admin approves/rejects worker registrations
+- **Ratings & Reviews** — Customers rate workers per booking
+- **Automated Emails** — Gmail SMTP for welcome emails and booking alerts
+- **3NF Database** — Composite attributes, weak entity, triggers, stored procedures
 
 ---
 
 ## 🛠️ Tech Stack
-* **Frontend:** React Native, Expo, React Navigation, React Native Reanimated.
-* **Backend:** Java 17+, `com.sun.net.httpserver`, JDBC.
-* **Database:** MySQL.
-* **Email:** `javax.mail` via Gmail SMTP.
+
+| Layer | Technology |
+|---|---|
+| Frontend | React Native, Expo SDK, React Navigation v6 |
+| Backend | Java 17+, `com.sun.net.httpserver`, JDBC |
+| Database | MySQL 8+ |
+| Build Tool | Apache Maven 3.6+ |
+| Email | JavaMail (`javax.mail`) via Gmail SMTP |
 
 ---
 
-## 🚀 Step-by-Step Running Guide
+## 📁 Project Structure
 
-### Prerequisites
-1. **Node.js** installed (v18+ recommended).
-2. **Java JDK 17+** installed.
-3. **Maven** installed (for backend dependency management).
-4. **MySQL Server** installed (e.g., via XAMPP, WAMP, or standalone MySQL Installer).
-5. **Expo Go** app installed on your physical mobile device, or Android Studio installed for emulation.
-
----
-
-### Step 1: Database Setup
-1. Open your MySQL client (e.g., phpMyAdmin, MySQL Workbench, or CLI).
-2. Create the `hunarhub` database and tables by running the provided schema:
-   * Locate the `backend/schema.sql` file.
-   * Execute its contents in your MySQL client.
-3. Verify that 8 tables were created (`users`, `workers`, `customers`, `services`, `bookings`, `messages`, `ratings`, `categories`).
-
----
-
-### Step 2: Backend Configuration
-1. Navigate to the database configuration file:
-   `backend/src/main/java/com/hunarhub/db/DatabaseConnection.java`
-2. Update the credentials if your local MySQL uses something other than `root` and `password`:
-   ```java
-   private static final String DB_USER = "root";
-   private static final String DB_PASSWORD = "password"; // Update this!
-   ```
-3. Navigate to the email configuration file:
-   `backend/src/main/java/com/hunarhub/utils/EmailSender.java`
-4. Update the Gmail SMTP credentials:
-   ```java
-   private static final String EMAIL_USERNAME = "your_email@gmail.com"; 
-   private static final String EMAIL_PASSWORD = "your_app_password"; // Use an App Password, not normal password
-   ```
+```
+HunarHub/
+├── backend/
+│   ├── src/main/java/com/hunarhub/
+│   │   ├── Main.java               ← Entry point, starts HTTP server
+│   │   ├── api/                    ← Route handlers (AuthHandler, BookingHandler, etc.)
+│   │   ├── dao/                    ← Database access (UserDAO, WorkerDAO, CustomerDAO)
+│   │   ├── db/                     ← DatabaseConnection.java
+│   │   ├── models/                 ← POJOs (User, Worker, Booking, etc.)
+│   │   └── utils/                  ← EmailSender, OtpStore, IOUtils
+│   ├── schema.sql                  ← Full DB schema (run this first)
+│   ├── queries.sql                 ← 30 demo/analysis SQL queries
+│   ├── ERD_Documentation.md        ← Full ERD + 3NF proof
+│   ├── ERD_drawio.xml              ← Import into draw.io for visual ERD
+│   └── pom.xml
+├── frontend/
+│   ├── src/
+│   │   ├── screens/                ← All app screens (auth, customer, worker, admin)
+│   │   ├── components/             ← Reusable UI components
+│   │   ├── navigation/             ← AppNavigator.js
+│   │   ├── context/                ← AuthContext.js
+│   │   ├── services/               ← api.js (all HTTP calls)
+│   │   └── theme/                  ← Theme.js (colors, fonts)
+│   └── App.js
+└── README.md
+```
 
 ---
 
-### Step 3: Run the Java Backend
-1. Open a terminal and navigate to the `backend` folder:
-   ```bash
-   cd backend
-   ```
-2. Compile and package the project using Maven:
-   ```bash
-   mvn clean package
-   ```
-3. Run the compiled application:
-   ```bash
-   java -cp target/hunarhub-backend-1.0-SNAPSHOT-jar-with-dependencies.jar com.hunarhub.Main
-   ```
-   *(Alternatively, just run `Main.java` directly through your IDE like IntelliJ or Eclipse).*
-4. You should see `Database connected successfully.` and `HunarHub Backend Server started on port 8080`.
+## ⚙️ Prerequisites
+
+Make sure these are installed before running anything:
+
+1. **Node.js** v18+ → [nodejs.org](https://nodejs.org)
+2. **Java JDK 17+** → [adoptium.net](https://adoptium.net)
+3. **Apache Maven 3.6+** → [maven.apache.org](https://maven.apache.org)
+4. **XAMPP** (or any MySQL 8+ server) → [apachefriends.org](https://www.apachefriends.org)
+5. **Expo Go** app on your phone → Play Store / App Store
+
+Verify installations:
+```bash
+node -v
+java -version
+mvn -version
+```
 
 ---
 
-### Step 4: Run the React Native Frontend
-1. Open a **new** terminal window and navigate to the `frontend` folder:
-   ```bash
-   cd frontend
-   ```
-2. Start the Expo development server:
-   ```bash
-   npx expo start
-   ```
-3. To view the app:
-   * **Android Emulator:** Press `a` in the terminal.
-   * **Physical Device:** Scan the QR code with the **Expo Go** app on your phone. 
-   *(Note: Ensure your phone and computer are on the same Wi-Fi network).*
+## 🗄️ Step 1 — Database Setup (XAMPP)
+
+1. Open **XAMPP Control Panel** → Start **Apache** and **MySQL**
+2. Open browser → go to `http://localhost/phpmyadmin`
+3. Click **"New"** in the left sidebar → Database name: `hunarhub` → **Create**
+4. Click the **SQL** tab at the top
+5. Open `backend/schema.sql`, copy **all content**, paste into the SQL box → click **Go**
+
+This creates all 12 tables, triggers, stored procedures, indexes, views, and seed data in one shot.
+
+> **Verify:** Left sidebar should show `hunarhub` with tables: `users`, `workers`, `customers`, `categories`, `services`, `bookings`, `ratings`, `messages`, `notifications`, `worker_skills`, `user_phone_numbers`, `audit_log`
 
 ---
 
-### Important Notes
-* **Localhost IP:** By default, the frontend API service (`frontend/src/services/api.js`) points to `http://10.0.2.2:8080/api` which is the alias for `localhost` in the Android Emulator. If you are testing on a physical device, change `10.0.2.2` to your computer's local IPv4 address (e.g., `192.168.1.5`).
-* **Admin Login:** The `schema.sql` creates a default Admin account:
-  * **Email:** `admin@hunarhub.com`
-  * **Password:** `admin123`
+## 🔧 Step 2 — Backend Configuration
+
+### 2a. Database credentials
+Open `backend/src/main/java/com/hunarhub/db/DatabaseConnection.java` and update if needed:
+
+```java
+private static final String DB_URL  = "jdbc:mysql://localhost:3306/hunarhub";
+private static final String DB_USER = "root";
+private static final String DB_PASSWORD = "";   // XAMPP default is empty string
+```
+
+> **XAMPP default:** username = `root`, password = *(empty)*
+
+### 2b. Email credentials (optional — only needed for email features)
+Open `backend/src/main/java/com/hunarhub/utils/EmailSender.java`:
+
+```java
+private static final String EMAIL_USERNAME = "your_email@gmail.com";
+private static final String EMAIL_PASSWORD = "your_app_password";  // Gmail App Password
+```
+
+> To generate a Gmail App Password: Google Account → Security → 2-Step Verification → App Passwords
+
+---
+
+## ▶️ Step 3 — Run the Backend
+
+Open a terminal in the `backend` folder and run these two commands:
+
+```bash
+# 1. Compile and build the JAR
+mvn clean package -DskipTests
+
+# 2. Run the server
+java -cp target/hunarhub-backend-1.0-SNAPSHOT-jar-with-dependencies.jar com.hunarhub.Main
+```
+
+**Expected output:**
+```
+Database connected successfully.
+HunarHub Backend Server started on port 8080
+```
+
+> The server runs on `http://localhost:8080`. Keep this terminal open.
+
+**Alternative (IDE):** Open the `backend` folder in IntelliJ IDEA or Eclipse and run `Main.java` directly.
+
+---
+
+## 📱 Step 4 — Run the Frontend
+
+Open a **new terminal** in the `frontend` folder:
+
+```bash
+# Install dependencies (only needed first time)
+npm install
+
+# Start the Expo development server
+npx expo start
+```
+
+**To open the app:**
+
+| Method | Steps |
+|---|---|
+| Android Emulator | Press `a` in the terminal (Android Studio must be installed) |
+| Physical Device | Scan the QR code with **Expo Go** app (same Wi-Fi required) |
+| Web (limited) | Press `w` in the terminal |
+
+---
+
+## 🌐 Step 5 — Connect Frontend to Backend
+
+Open `frontend/src/services/api.js` and check the `BASE_URL`:
+
+```js
+// For Android Emulator (default):
+const BASE_URL = 'http://10.0.2.2:8080/api';
+
+// For Physical Device — replace with your PC's local IP:
+const BASE_URL = 'http://192.168.X.X:8080/api';
+```
+
+> Find your PC's local IP: run `ipconfig` (Windows) → look for **IPv4 Address** under your Wi-Fi adapter.
+
+---
+
+## 🔑 Default Login Credentials
+
+| Role | Email | Password |
+|---|---|---|
+| Admin | `admin@hunarhub.com` | `admin123` |
+| Worker | Register via app | — |
+| Customer | Register via app | — |
+
+---
+
+## 🗃️ Database Files
+
+| File | Purpose |
+|---|---|
+| `backend/schema.sql` | Run once in phpMyAdmin — creates all tables, triggers, procedures |
+| `backend/queries.sql` | 30 SQL queries for demonstration (SELECT, JOIN, AGGREGATE, CTE, Window Functions) |
+| `backend/ERD_Documentation.md` | Full ERD documentation with 3NF proof and draw.io instructions |
+| `backend/ERD_drawio.xml` | Import directly into [draw.io](https://app.diagrams.net) for visual ERD |
+
+### How to import ERD in draw.io:
+1. Go to [app.diagrams.net](https://app.diagrams.net)
+2. Menu → **Extras → Edit Diagram**
+3. Delete existing content, paste contents of `ERD_drawio.xml` → **OK**
+
+---
+
+## ❗ Common Issues & Fixes
+
+| Problem | Fix |
+|---|---|
+| `Database connection failed` | Make sure XAMPP MySQL is running and password in `DatabaseConnection.java` matches |
+| `Port 8080 already in use` | Kill the process: `netstat -ano \| findstr :8080` then `taskkill /PID <pid> /F` |
+| `npm install` fails | Delete `node_modules` folder and `package-lock.json`, then run `npm install` again |
+| App can't reach backend on physical device | Change `10.0.2.2` to your PC's IPv4 address in `api.js` |
+| `mvn` not recognized | Add Maven `bin` folder to system PATH environment variable |
+| Expo QR not scanning | Make sure phone and PC are on the same Wi-Fi network |
+
+---
+
+## 👤 Default Admin Account
+
+Created automatically when you run `schema.sql`:
+- **Email:** `admin@hunarhub.com`
+- **Password:** `admin123`

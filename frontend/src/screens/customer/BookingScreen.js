@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SIZES, FONTS } from '../../theme/Theme';
 import GradientButton from '../../components/GradientButton';
 import { bookingAPI } from '../../services/api';
@@ -12,21 +13,21 @@ import { bookingAPI } from '../../services/api';
 const BOOKING_TYPES = [
   {
     key: 'NORMAL',
-    icon: '📅',
+    icon: 'calendar-outline',
     title: 'Normal Booking',
     desc: 'Standard service request at your convenience',
     color: COLORS.primary,
   },
   {
     key: 'ADVANCE',
-    icon: '🗓️',
+    icon: 'calendar-number-outline',
     title: 'Advance Booking',
     desc: 'Schedule for a specific future date & time',
     color: COLORS.secondary,
   },
   {
     key: 'URGENT',
-    icon: '🚨',
+    icon: 'flash-outline',
     title: 'Urgent Booking',
     desc: 'Emergency priority — worker notified immediately',
     color: COLORS.error,
@@ -106,29 +107,41 @@ const BookingScreen = ({ navigation, route }) => {
       return;
     }
 
+    // Resolve workerId from all possible field names
+    const resolvedWorkerId =
+      worker?.workerId ?? worker?.worker_id ?? worker?.id ?? null;
+
+    if (!resolvedWorkerId) {
+      Alert.alert('Error', 'Worker information is missing. Please go back and try again.');
+      return;
+    }
+
     setLoading(true);
     try {
       const userId = await AsyncStorage.getItem('userId');
-      if (!userId) throw new Error('Please log in again.');
+      if (!userId) {
+        Alert.alert('Session Expired', 'Please log in again.');
+        return;
+      }
 
       const bookingData = {
-        customerId: parseInt(userId, 10),
-        workerId:   worker?.workerId || worker?.id,
-        type:       bookingType,
+        customerId:  parseInt(userId, 10),
+        workerId:    parseInt(resolvedWorkerId, 10),
+        type:        bookingType,
         scheduledAt: bookingType === 'ADVANCE' ? `${selectedDate} ${selectedTime}:00` : null,
       };
 
       await bookingAPI.create(bookingData);
 
       Alert.alert(
-        '✅ Booking Confirmed',
+        'Booking Confirmed ✓',
         bookingType === 'ADVANCE'
           ? `Your advance booking for ${selectedDate} at ${selectedTime} has been sent to ${worker?.name}.`
           : `Your ${bookingType.toLowerCase()} booking has been sent to ${worker?.name}. They will respond shortly.`,
         [{ text: 'OK', onPress: () => navigation.navigate('CustomerHome') }]
       );
     } catch (error) {
-      Alert.alert('Booking Failed', error.message);
+      Alert.alert('Booking Failed', error.message || 'Something went wrong. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -157,7 +170,12 @@ const BookingScreen = ({ navigation, route }) => {
             <View style={{ flex: 1 }}>
               <Text style={styles.workerName}>{worker.name}</Text>
               <Text style={styles.workerCat}>{worker.category}</Text>
-              {worker.city ? <Text style={styles.workerCity}>📍 {worker.city}</Text> : null}
+              {worker.city ? (
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 2 }}>
+                  <Ionicons name="location-outline" size={12} color={COLORS.textSecondary} style={{ marginRight: 3 }} />
+                  <Text style={styles.workerCity}>{worker.city}</Text>
+                </View>
+              ) : null}
             </View>
             {worker.rating > 0 && (
               <View style={styles.ratingBadge}>
@@ -183,7 +201,7 @@ const BookingScreen = ({ navigation, route }) => {
                 style={StyleSheet.absoluteFill}
               />
               <View style={[styles.typeIconWrap, { backgroundColor: type.color + '18', borderColor: type.color + '40' }]}>
-                <Text style={styles.typeIcon}>{type.icon}</Text>
+                <Ionicons name={type.icon} size={22} color={type.color} />
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={[styles.typeTitle, active && { color: type.color }]}>{type.title}</Text>

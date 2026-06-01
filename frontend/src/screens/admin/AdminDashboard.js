@@ -223,6 +223,10 @@ const BookingCard = ({ item }) => {
   const tc = TYPE_COLOR[type]     || '#7C3AED';
   const sc = STATUS_COLOR[status] || '#FFC107';
   const catIcon = CAT_ICONS[item.category] || 'clipboard-outline';
+  const workerCity = item.workerCity && item.workerCity !== '' ? '  ·  ' + item.workerCity : '';
+  const dateStr = item.bookingDate
+    ? String(item.bookingDate).replace('T', '  ').slice(0, 17)
+    : 'N/A';
   return (
     <View style={$.card}>
       <LinearGradient colors={[tc + '10', 'transparent']} style={$.cardGlow} />
@@ -233,7 +237,7 @@ const BookingCard = ({ item }) => {
         <View style={{ flex: 1 }}>
           <Text style={$.cardName}>{item.customerName || 'Unknown Customer'}</Text>
           <Text style={$.cardSub}>Worker: {item.workerName || 'N/A'}</Text>
-          <Text style={$.cardSub}>{item.category || 'N/A'}{item.workerCity ? '  ·  ' + item.workerCity : ''}</Text>
+          <Text style={$.cardSub}>{item.category || 'N/A'}{workerCity}</Text>
         </View>
         <View style={{ alignItems: 'flex-end' }}>
           <View style={[$.badge, { backgroundColor: tc + '18', borderColor: tc + '50', marginBottom: 5 }]}>
@@ -247,11 +251,11 @@ const BookingCard = ({ item }) => {
       <View style={$.cardDet}>
         <View style={$.detRow}>
           <Ionicons name="calendar-outline" size={14} color="#6B6880" style={{ marginRight: 8 }} />
-          <Text style={$.detVal}>{item.bookingDate ? String(item.bookingDate).replace('T','  ').slice(0,17) : 'N/A'}</Text>
+          <Text style={$.detVal}>{dateStr}</Text>
         </View>
         <View style={$.detRow}>
           <Ionicons name="receipt-outline" size={14} color="#6B6880" style={{ marginRight: 8 }} />
-          <Text style={$.detVal}>Booking ID: {item.bookingId || 'N/A'}</Text>
+          <Text style={$.detVal}>Booking ID: #{item.bookingId ?? 'N/A'}</Text>
         </View>
       </View>
     </View>
@@ -386,7 +390,7 @@ const AdminDashboard = () => {
       </View>
       <View style={$.statsRow}>
         <StatCard iconName="people-outline"    label="CUSTOMERS" value={stats?.totalCustomers}  color="#7C3AED" onPress={() => setActiveTab('customers')} />
-        <StatCard iconName="clipboard-outline" label="BOOKINGS"  value={stats?.totalBookings}   color="#A855F7" onPress={() => {}} />
+        <StatCard iconName="clipboard-outline" label="BOOKINGS"  value={stats?.totalBookings}   color="#A855F7" onPress={() => setActiveTab('bookings')} />
       </View>
 
       {/* Recent Bookings */}
@@ -412,7 +416,10 @@ const AdminDashboard = () => {
     return (
       <FlatList
         data={data}
-        keyExtractor={item => (item.bookingId || item.id)?.toString() ?? Math.random().toString()}
+        keyExtractor={item => {
+          if (activeTab === 'bookings') return String(item.bookingId ?? Math.random());
+          return String(item.id ?? item.workerId ?? Math.random());
+        }}
         contentContainerStyle={[$.list, data.length === 0 && $.listEmpty]}
         showsVerticalScrollIndicator={false}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#7C3AED" colors={['#7C3AED']} />}

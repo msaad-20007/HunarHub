@@ -45,7 +45,7 @@ public class AdminHandler {
                 sendResponse(exchange, 405, "{\"error\":\"Method not allowed\"}"); return;
             }
             try (Connection conn = DatabaseConnection.getConnection()) {
-                String sql = "SELECT u.id, u.name, u.email, u.phone, u.city, u.dob, " +
+                String sql = "SELECT u.id, u.name, u.email, u.phone, u.address_city AS city, u.dob, " +
                              "w.worker_id, w.cnic, w.whatsapp, w.category, w.approval_status, w.rating " +
                              "FROM users u JOIN workers w ON u.id = w.user_id " +
                              "WHERE w.approval_status = 'PENDING'";
@@ -69,7 +69,7 @@ public class AdminHandler {
                 sendResponse(exchange, 405, "{\"error\":\"Method not allowed\"}"); return;
             }
             try (Connection conn = DatabaseConnection.getConnection()) {
-                String sql = "SELECT u.id, u.name, u.email, u.phone, u.city, u.dob, " +
+                String sql = "SELECT u.id, u.name, u.email, u.phone, u.address_city AS city, u.dob, " +
                              "w.worker_id, w.cnic, w.whatsapp, w.category, w.approval_status, w.rating " +
                              "FROM users u JOIN workers w ON u.id = w.user_id " +
                              "ORDER BY w.approval_status, u.name";
@@ -93,7 +93,7 @@ public class AdminHandler {
                 sendResponse(exchange, 405, "{\"error\":\"Method not allowed\"}"); return;
             }
             try (Connection conn = DatabaseConnection.getConnection()) {
-                String sql = "SELECT u.id, u.name, u.email, u.phone, u.city, u.dob, c.customer_id " +
+                String sql = "SELECT u.id, u.name, u.email, u.phone, u.address_city AS city, u.dob, c.customer_id " +
                              "FROM users u JOIN customers c ON u.id = c.user_id ORDER BY u.name";
                 PreparedStatement ps = conn.prepareStatement(sql);
                 ResultSet rs = ps.executeQuery();
