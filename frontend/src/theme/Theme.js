@@ -1,20 +1,20 @@
-// ── HunarHub Premium Palette — Midnight Amber ────────────────────────────────
-// Inspired by: Uber, Revolut, premium fintech apps
-// Primary:   #F5A623  (Warm Amber Gold)
-// Secondary: #E8621A  (Deep Coral Orange)
-// Dark bg:   #0D0D0D → #1A1208  (Near-black with warm undertone)
+// ── HunarHub Premium Palette — Electric Violet ───────────────────────────────
+// Used by: Discord, Linear, Figma, Twitch, Vercel — #1 premium dark palette
+// Primary:   #7C3AED  Electric Violet
+// Secondary: #A855F7  Bright Purple
+// Accent:    #06B6D4  Cyan pop (for contrast on dark)
 
 export const COLORS = {
-  background:    '#0F0D0A',   // Near-black warm dark
-  card:          '#1C1812',   // Warm dark card
-  primary:       '#F5A623',   // Amber gold — main brand color
-  secondary:     '#E8621A',   // Coral orange — accent
-  text:          '#F5EFE6',   // Warm white
-  textSecondary: '#8A7D6B',   // Warm muted
-  border:        '#2E2820',   // Warm dark border
-  error:         '#FF4C4C',   // Red
-  success:       '#2ECC71',   // Green
-  warning:       '#F5A623',   // Same as primary amber
+  background:    '#0A0A0F',   // Near-black with purple undertone
+  card:          '#13111C',   // Deep purple-tinted card
+  primary:       '#7C3AED',   // Electric Violet — main brand
+  secondary:     '#A855F7',   // Bright Purple — accent
+  text:          '#F1F0F5',   // Soft white
+  textSecondary: '#6B6880',   // Muted purple-grey
+  border:        '#2D2640',   // Subtle purple border
+  error:         '#EF4444',   // Red
+  success:       '#10B981',   // Emerald green
+  warning:       '#F59E0B',   // Amber
 };
 
 export const SIZES = {

@@ -62,7 +62,7 @@ const SearchScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       {/* Header */}
-      <LinearGradient colors={['#1C1812', '#0F0D0A']} style={styles.header}>
+      <LinearGradient colors={['#13111C', '#0A0A0F']} style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
           <Text style={styles.backText}>‹ Back</Text>
         </TouchableOpacity>
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
     paddingHorizontal: SIZES.padding, paddingTop: SIZES.extraLarge * 2, paddingBottom: SIZES.padding,
-    borderBottomWidth: 1, borderBottomColor: '#2A2018',
+    borderBottomWidth: 1, borderBottomColor: '#1E1A2E',
   },
   backBtn:     { padding: SIZES.small },
   backText:    { ...FONTS.body, color: COLORS.primary, fontSize: 18 },

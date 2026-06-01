@@ -16,7 +16,7 @@ const CAT_ICONS = {
 const InfoRow = ({ iconName, label, value }) => (
   <View style={s.infoRow}>
     <View style={s.infoIconBox}>
-      <Ionicons name={iconName} size={20} color="#F5A623" />
+      <Ionicons name={iconName} size={20} color="#7C3AED" />
     </View>
     <View style={s.infoContent}>
       <Text style={s.infoLabel}>{label}</Text>
@@ -55,12 +55,12 @@ const WorkerDetailsScreen = ({ navigation, route }) => {
 
   return (
     <View style={s.root}>
-      <StatusBar barStyle="light-content" backgroundColor="#0A0806" />
-      <LinearGradient colors={['#0A0806', '#0F0D0A']} style={StyleSheet.absoluteFill} />
+      <StatusBar barStyle="light-content" backgroundColor="#07070D" />
+      <LinearGradient colors={['#07070D', '#0A0A0F']} style={StyleSheet.absoluteFill} />
 
       <TouchableOpacity style={s.backBtn} onPress={() => navigation.goBack()} activeOpacity={0.8}>
         <View style={s.backBtnInner}>
-          <Ionicons name="chevron-back" size={18} color="#F5A623" />
+          <Ionicons name="chevron-back" size={18} color="#7C3AED" />
           <Text style={s.backTxt}>Back</Text>
         </View>
       </TouchableOpacity>
@@ -69,16 +69,16 @@ const WorkerDetailsScreen = ({ navigation, route }) => {
         <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: slideY }] }}>
 
           {/* Hero */}
-          <LinearGradient colors={['#1C1812', '#2A2018']} style={s.hero}>
-            <LinearGradient colors={['#F5A62315', 'transparent']} style={StyleSheet.absoluteFill} />
-            <LinearGradient colors={['#F5A623', '#E8621A']} style={s.avatar}>
+          <LinearGradient colors={['#13111C', '#1E1A2E']} style={s.hero}>
+            <LinearGradient colors={['#7C3AED15', 'transparent']} style={StyleSheet.absoluteFill} />
+            <LinearGradient colors={['#7C3AED', '#A855F7']} style={s.avatar}>
               <Text style={s.avatarTxt}>{initials}</Text>
             </LinearGradient>
             <Text style={s.name}>{worker.name}</Text>
 
             {/* Category badge */}
             <View style={s.catBadge}>
-              <Ionicons name={catIcon} size={16} color="#F5A623" style={{ marginRight: 6 }} />
+              <Ionicons name={catIcon} size={16} color="#7C3AED" style={{ marginRight: 6 }} />
               <Text style={s.catTxt}>{worker.category}</Text>
             </View>
 
@@ -113,7 +113,7 @@ const WorkerDetailsScreen = ({ navigation, route }) => {
 
             {worker.city ? (
               <View style={s.cityRow}>
-                <Ionicons name="location-outline" size={13} color="#6B5D4F" style={{ marginRight: 4 }} />
+                <Ionicons name="location-outline" size={13} color="#6B6880" style={{ marginRight: 4 }} />
                 <Text style={s.cityTxt}>{worker.city}</Text>
               </View>
             ) : null}
@@ -166,7 +166,7 @@ const WorkerDetailsScreen = ({ navigation, route }) => {
           <View style={s.actions}>
             <GradientButton title="Book Now" onPress={() => navigation.navigate('Booking', { worker })} style={{ marginBottom: SIZES.base }} />
             <TouchableOpacity style={s.chatBtn} onPress={() => navigation.navigate('Chat', { worker })} activeOpacity={0.8}>
-              <Ionicons name="chatbubble-outline" size={18} color="#F5A623" style={{ marginRight: 8 }} />
+              <Ionicons name="chatbubble-outline" size={18} color="#7C3AED" style={{ marginRight: 8 }} />
               <Text style={s.chatTxt}>Send Message</Text>
             </TouchableOpacity>
           </View>
@@ -178,11 +178,11 @@ const WorkerDetailsScreen = ({ navigation, route }) => {
 };
 
 const s = StyleSheet.create({
-  root:   { flex: 1, backgroundColor: '#0F0D0A' },
-  center: { flex: 1, backgroundColor: '#0F0D0A', justifyContent: 'center', alignItems: 'center' },
-  errorTxt: { color: '#8A7D6B', fontSize: 16, marginBottom: 16 },
-  backBtnAlt: { paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12, borderWidth: 1, borderColor: '#F5A62340' },
-  backBtnAltTxt: { color: '#F5A623', fontWeight: '700' },
+  root:   { flex: 1, backgroundColor: '#0A0A0F' },
+  center: { flex: 1, backgroundColor: '#0A0A0F', justifyContent: 'center', alignItems: 'center' },
+  errorTxt: { color: '#6B6880', fontSize: 16, marginBottom: 16 },
+  backBtnAlt: { paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12, borderWidth: 1, borderColor: '#7C3AED40' },
+  backBtnAltTxt: { color: '#7C3AED', fontWeight: '700' },
   backBtn: { position: 'absolute', top: SIZES.extraLarge * 1.8, left: SIZES.padding, zIndex: 10 },
   backBtnInner: {
     flexDirection: 'row', alignItems: 'center',
@@ -190,20 +190,20 @@ const s = StyleSheet.create({
     borderColor: 'rgba(0,210,255,0.25)', borderRadius: 20,
     paddingHorizontal: 12, paddingVertical: 7,
   },
-  backTxt: { color: '#F5A623', fontSize: 13, fontWeight: '600', marginLeft: 2 },
+  backTxt: { color: '#7C3AED', fontSize: 13, fontWeight: '600', marginLeft: 2 },
   scroll: { paddingTop: SIZES.extraLarge * 3.5, paddingBottom: 40 },
   hero: {
-    marginHorizontal: SIZES.padding, borderRadius: 24, borderWidth: 1, borderColor: '#2A2018',
+    marginHorizontal: SIZES.padding, borderRadius: 24, borderWidth: 1, borderColor: '#1E1A2E',
     padding: SIZES.padding + 4, alignItems: 'center', marginBottom: SIZES.base, overflow: 'hidden',
   },
   avatar: {
     width: 90, height: 90, borderRadius: 45, justifyContent: 'center', alignItems: 'center', marginBottom: 14,
-    shadowColor: '#F5A623', shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.5, shadowRadius: 15, elevation: 12,
+    shadowColor: '#7C3AED', shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.5, shadowRadius: 15, elevation: 12,
   },
   avatarTxt: { fontSize: 34, fontWeight: '900', color: '#FFF' },
-  name: { fontSize: 24, fontWeight: '800', color: '#F5EFE6', marginBottom: 10 },
-  catBadge: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#F5A62315', borderRadius: 20, borderWidth: 1, borderColor: '#F5A62330', paddingHorizontal: 14, paddingVertical: 6, marginBottom: 10 },
-  catTxt: { color: '#F5A623', fontWeight: '700', fontSize: 14 },
+  name: { fontSize: 24, fontWeight: '800', color: '#F1F0F5', marginBottom: 10 },
+  catBadge: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#7C3AED15', borderRadius: 20, borderWidth: 1, borderColor: '#7C3AED30', paddingHorizontal: 14, paddingVertical: 6, marginBottom: 10 },
+  catTxt: { color: '#7C3AED', fontWeight: '700', fontSize: 14 },
   ratingRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 10, gap: 2 },
   ratingNum: { color: '#FFC107', fontWeight: '800', fontSize: 16, marginLeft: 6 },
   newBadge: { backgroundColor: '#00E67615', borderRadius: 10, borderWidth: 1, borderColor: '#00E67640', paddingHorizontal: 12, paddingVertical: 4, marginBottom: 10 },
@@ -211,27 +211,27 @@ const s = StyleSheet.create({
   statusBadge: { flexDirection: 'row', alignItems: 'center', borderRadius: 10, borderWidth: 1, paddingHorizontal: 14, paddingVertical: 5, marginBottom: 8 },
   statusTxt: { fontSize: 13, fontWeight: '700' },
   cityRow: { flexDirection: 'row', alignItems: 'center', marginTop: 4 },
-  cityTxt: { color: '#6B5D4F', fontSize: 13 },
+  cityTxt: { color: '#6B6880', fontSize: 13 },
   section: { marginHorizontal: SIZES.padding, marginBottom: SIZES.base },
-  sectionTitle: { fontSize: 11, color: '#4A3D30', fontWeight: '800', letterSpacing: 2, marginBottom: 10, marginTop: 8 },
-  infoRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#1C1812', borderRadius: 14, borderWidth: 1, borderColor: '#2E2820', padding: 14, marginBottom: 8 },
-  infoIconBox: { width: 40, height: 40, borderRadius: 12, backgroundColor: '#F5A62312', borderWidth: 1, borderColor: '#F5A62325', justifyContent: 'center', alignItems: 'center', marginRight: 14 },
+  sectionTitle: { fontSize: 11, color: '#3D3654', fontWeight: '800', letterSpacing: 2, marginBottom: 10, marginTop: 8 },
+  infoRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#13111C', borderRadius: 14, borderWidth: 1, borderColor: '#2D2640', padding: 14, marginBottom: 8 },
+  infoIconBox: { width: 40, height: 40, borderRadius: 12, backgroundColor: '#7C3AED12', borderWidth: 1, borderColor: '#7C3AED25', justifyContent: 'center', alignItems: 'center', marginRight: 14 },
   infoContent: { flex: 1 },
-  infoLabel: { fontSize: 11, color: '#6B5D4F', fontWeight: '600', letterSpacing: 0.5, marginBottom: 2 },
-  infoValue: { fontSize: 15, color: '#F5EFE6', fontWeight: '600' },
-  aboutCard: { backgroundColor: '#1C1812', borderRadius: 14, borderWidth: 1, borderColor: '#2E2820', padding: 16 },
-  aboutTxt: { fontSize: 14, color: '#8A7D6B', lineHeight: 22 },
-  serviceCard: { backgroundColor: '#1C1812', borderRadius: 14, borderWidth: 1, borderColor: '#2E2820', overflow: 'hidden' },
-  serviceRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: '#2E2820' },
-  serviceName: { fontSize: 14, color: '#F5EFE6', fontWeight: '600' },
+  infoLabel: { fontSize: 11, color: '#6B6880', fontWeight: '600', letterSpacing: 0.5, marginBottom: 2 },
+  infoValue: { fontSize: 15, color: '#F1F0F5', fontWeight: '600' },
+  aboutCard: { backgroundColor: '#13111C', borderRadius: 14, borderWidth: 1, borderColor: '#2D2640', padding: 16 },
+  aboutTxt: { fontSize: 14, color: '#6B6880', lineHeight: 22 },
+  serviceCard: { backgroundColor: '#13111C', borderRadius: 14, borderWidth: 1, borderColor: '#2D2640', overflow: 'hidden' },
+  serviceRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: '#2D2640' },
+  serviceName: { fontSize: 14, color: '#F1F0F5', fontWeight: '600' },
   servicePrice: { fontSize: 15, color: '#00E676', fontWeight: '800' },
   actions: { marginHorizontal: SIZES.padding, marginTop: SIZES.base },
   chatBtn: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-    borderWidth: 1.5, borderColor: '#F5A62340', borderRadius: SIZES.radius,
-    padding: SIZES.padding, backgroundColor: '#F5A62308',
+    borderWidth: 1.5, borderColor: '#7C3AED40', borderRadius: SIZES.radius,
+    padding: SIZES.padding, backgroundColor: '#7C3AED08',
   },
-  chatTxt: { color: '#F5A623', fontWeight: '700', fontSize: 16 },
+  chatTxt: { color: '#7C3AED', fontWeight: '700', fontSize: 16 },
 });
 
 export default WorkerDetailsScreen;

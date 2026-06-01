@@ -118,7 +118,7 @@ const SignupScreen = ({ navigation }) => {
 
   return (
     <View style={styles.root}>
-      <LinearGradient colors={['#0A0806', '#0F0D0A', '#0F0D0A']} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={['#07070D', '#0A0A0F', '#0A0A0F']} style={StyleSheet.absoluteFill} />
 
       {/* Back button */}
       <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()} activeOpacity={0.7}>
@@ -133,7 +133,7 @@ const SignupScreen = ({ navigation }) => {
 
           {/* Logo */}
           <LinearGradient
-            colors={[COLORS.primary, '#C4500F', COLORS.secondary]}
+            colors={[COLORS.primary, '#6D28D9', COLORS.secondary]}
             start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
             style={styles.logoBox}
           >
@@ -215,7 +215,7 @@ const SignupScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: '#0F0D0A' },
+  root: { flex: 1, backgroundColor: '#0A0A0F' },
   backBtn: { position: 'absolute', top: SIZES.extraLarge * 1.8, left: SIZES.padding, zIndex: 10 },
   backBtnInner: {
     flexDirection: 'row', alignItems: 'center',

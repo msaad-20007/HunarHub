@@ -26,9 +26,9 @@ const CAT_ICONS = {
   'AC Repair':'snow-outline', Carpenter:'hammer-outline', Mechanic:'settings-outline',
   Welder:'flame-outline', Qasai:'restaurant-outline',
 };
-const TYPE_COLOR   = { URGENT:'#FF4C4C', ADVANCE:'#FFC107', NORMAL:'#F5A623' };
+const TYPE_COLOR   = { URGENT:'#FF4C4C', ADVANCE:'#FFC107', NORMAL:'#7C3AED' };
 const STATUS_COLOR = { APPROVED:'#00E676', REJECTED:'#FF4C4C', PENDING:'#FFC107',
-                       ACCEPTED:'#00E676', COMPLETED:'#E8621A' };
+                       ACCEPTED:'#00E676', COMPLETED:'#A855F7' };
 
 // ─── Dark Modal ───────────────────────────────────────────────────────────────
 const DarkModal = ({ visible, title, message, iconName, iconColor, actions, onClose }) => {
@@ -106,11 +106,11 @@ const PortalEntry = ({ onDone }) => {
 
   return (
     <Animated.View style={[$.pWrap, { opacity: out }]}>
-      <LinearGradient colors={['#0A0806', '#0A0806', '#0A0806']} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={['#07070D', '#07070D', '#07070D']} style={StyleSheet.absoluteFill} />
       {/* Rings */}
-      <Animated.View style={[$.pRing, { width: 420, height: 420, borderRadius: 210, borderColor: '#F5A62318', transform: [{ scale: r3 }] }]} />
-      <Animated.View style={[$.pRing, { width: 300, height: 300, borderRadius: 150, borderColor: '#F5A62335', transform: [{ scale: r2 }] }]} />
-      <Animated.View style={[$.pRing, { width: 190, height: 190, borderRadius: 95,  borderColor: '#F5A62370', borderWidth: 1.5, transform: [{ scale: r1 }] }]} />
+      <Animated.View style={[$.pRing, { width: 420, height: 420, borderRadius: 210, borderColor: '#7C3AED18', transform: [{ scale: r3 }] }]} />
+      <Animated.View style={[$.pRing, { width: 300, height: 300, borderRadius: 150, borderColor: '#7C3AED35', transform: [{ scale: r2 }] }]} />
+      <Animated.View style={[$.pRing, { width: 190, height: 190, borderRadius: 95,  borderColor: '#7C3AED70', borderWidth: 1.5, transform: [{ scale: r1 }] }]} />
       {/* Center glow */}
       <View style={$.pGlow} />
       {/* Text */}
@@ -144,17 +144,17 @@ const WorkerCard = ({ item, onApprove, onReject, onDelete }) => {
     <View style={$.card}>
       <LinearGradient colors={[sc + '10', 'transparent']} style={$.cardGlow} />
       <View style={$.cardHead}>
-        <LinearGradient colors={['#F5A62325', '#E8621A20']} style={$.cardAv}>
+        <LinearGradient colors={['#7C3AED25', '#A855F720']} style={$.cardAv}>
           <Text style={$.cardAvTxt}>{item.name?.charAt(0).toUpperCase() || 'W'}</Text>
         </LinearGradient>
         <View style={{ flex: 1 }}>
           <Text style={$.cardName}>{item.name}</Text>
           <View style={$.cardSubRow}>
-            <Ionicons name={catIcon} size={12} color="#6B5D4F" style={{ marginRight: 4 }} />
+            <Ionicons name={catIcon} size={12} color="#6B6880" style={{ marginRight: 4 }} />
             <Text style={$.cardSub}>{item.category || 'N/A'}</Text>
           </View>
           <View style={$.cardSubRow}>
-            <Ionicons name="location-outline" size={12} color="#6B5D4F" style={{ marginRight: 4 }} />
+            <Ionicons name="location-outline" size={12} color="#6B6880" style={{ marginRight: 4 }} />
             <Text style={$.cardSub}>{item.city || 'N/A'}</Text>
           </View>
         </View>
@@ -163,10 +163,10 @@ const WorkerCard = ({ item, onApprove, onReject, onDelete }) => {
         </View>
       </View>
       <View style={$.cardDet}>
-        <View style={$.detRow}><Ionicons name="mail-outline"  size={14} color="#6B5D4F" style={{ marginRight: 8 }} /><Text style={$.detVal}>{item.email}</Text></View>
-        <View style={$.detRow}><Ionicons name="call-outline"  size={14} color="#6B5D4F" style={{ marginRight: 8 }} /><Text style={$.detVal}>{item.phone || 'N/A'}</Text></View>
-        <View style={$.detRow}><Ionicons name="card-outline"  size={14} color="#6B5D4F" style={{ marginRight: 8 }} /><Text style={$.detVal}>{item.cnic}</Text></View>
-        {item.whatsapp ? <View style={$.detRow}><Ionicons name="logo-whatsapp" size={14} color="#6B5D4F" style={{ marginRight: 8 }} /><Text style={$.detVal}>{item.whatsapp}</Text></View> : null}
+        <View style={$.detRow}><Ionicons name="mail-outline"  size={14} color="#6B6880" style={{ marginRight: 8 }} /><Text style={$.detVal}>{item.email}</Text></View>
+        <View style={$.detRow}><Ionicons name="call-outline"  size={14} color="#6B6880" style={{ marginRight: 8 }} /><Text style={$.detVal}>{item.phone || 'N/A'}</Text></View>
+        <View style={$.detRow}><Ionicons name="card-outline"  size={14} color="#6B6880" style={{ marginRight: 8 }} /><Text style={$.detVal}>{item.cnic}</Text></View>
+        {item.whatsapp ? <View style={$.detRow}><Ionicons name="logo-whatsapp" size={14} color="#6B6880" style={{ marginRight: 8 }} /><Text style={$.detVal}>{item.whatsapp}</Text></View> : null}
       </View>
       <View style={$.cardActs}>
         {item.approvalStatus !== 'APPROVED' && (
@@ -181,8 +181,8 @@ const WorkerCard = ({ item, onApprove, onReject, onDelete }) => {
             <Text style={[$.actTxt, { color: '#FF4C4C' }]}>Reject</Text>
           </TouchableOpacity>
         )}
-        <TouchableOpacity style={[$.actBtn, { backgroundColor: '#ffffff08', borderColor: '#2E2820', flex: 0, paddingHorizontal: 18 }]} onPress={() => onDelete(item)} activeOpacity={0.8}>
-          <Ionicons name="trash-outline" size={15} color="#6B5D4F" />
+        <TouchableOpacity style={[$.actBtn, { backgroundColor: '#ffffff08', borderColor: '#2D2640', flex: 0, paddingHorizontal: 18 }]} onPress={() => onDelete(item)} activeOpacity={0.8}>
+          <Ionicons name="trash-outline" size={15} color="#6B6880" />
         </TouchableOpacity>
       </View>
     </View>
@@ -193,13 +193,13 @@ const WorkerCard = ({ item, onApprove, onReject, onDelete }) => {
 const CustomerCard = ({ item, onDelete }) => (
   <View style={$.card}>
     <View style={$.cardHead}>
-      <LinearGradient colors={['#E8621A25', '#F5A62318']} style={$.cardAv}>
+      <LinearGradient colors={['#A855F725', '#7C3AED18']} style={$.cardAv}>
         <Text style={$.cardAvTxt}>{item.name?.charAt(0).toUpperCase() || 'C'}</Text>
       </LinearGradient>
       <View style={{ flex: 1 }}>
         <Text style={$.cardName}>{item.name || 'Unknown'}</Text>
         <View style={$.cardSubRow}>
-          <Ionicons name="location-outline" size={12} color="#6B5D4F" style={{ marginRight: 4 }} />
+          <Ionicons name="location-outline" size={12} color="#6B6880" style={{ marginRight: 4 }} />
           <Text style={$.cardSub}>{item.city || 'N/A'}</Text>
         </View>
       </View>
@@ -208,9 +208,9 @@ const CustomerCard = ({ item, onDelete }) => (
       </TouchableOpacity>
     </View>
     <View style={$.cardDet}>
-      <View style={$.detRow}><Ionicons name="mail-outline" size={14} color="#6B5D4F" style={{ marginRight: 8 }} /><Text style={$.detVal}>{item.email}</Text></View>
-      <View style={$.detRow}><Ionicons name="call-outline" size={14} color="#6B5D4F" style={{ marginRight: 8 }} /><Text style={$.detVal}>{item.phone || 'N/A'}</Text></View>
-      {item.dob ? <View style={$.detRow}><Ionicons name="gift-outline" size={14} color="#6B5D4F" style={{ marginRight: 8 }} /><Text style={$.detVal}>{item.dob}</Text></View> : null}
+      <View style={$.detRow}><Ionicons name="mail-outline" size={14} color="#6B6880" style={{ marginRight: 8 }} /><Text style={$.detVal}>{item.email}</Text></View>
+      <View style={$.detRow}><Ionicons name="call-outline" size={14} color="#6B6880" style={{ marginRight: 8 }} /><Text style={$.detVal}>{item.phone || 'N/A'}</Text></View>
+      {item.dob ? <View style={$.detRow}><Ionicons name="gift-outline" size={14} color="#6B6880" style={{ marginRight: 8 }} /><Text style={$.detVal}>{item.dob}</Text></View> : null}
     </View>
   </View>
 );
@@ -220,7 +220,7 @@ const BookingCard = ({ item }) => {
   if (!item) return null;
   const type   = item.type   || 'NORMAL';
   const status = item.status || 'PENDING';
-  const tc = TYPE_COLOR[type]     || '#F5A623';
+  const tc = TYPE_COLOR[type]     || '#7C3AED';
   const sc = STATUS_COLOR[status] || '#FFC107';
   const catIcon = CAT_ICONS[item.category] || 'clipboard-outline';
   return (
@@ -246,11 +246,11 @@ const BookingCard = ({ item }) => {
       </View>
       <View style={$.cardDet}>
         <View style={$.detRow}>
-          <Ionicons name="calendar-outline" size={14} color="#6B5D4F" style={{ marginRight: 8 }} />
+          <Ionicons name="calendar-outline" size={14} color="#6B6880" style={{ marginRight: 8 }} />
           <Text style={$.detVal}>{item.bookingDate ? String(item.bookingDate).replace('T','  ').slice(0,17) : 'N/A'}</Text>
         </View>
         <View style={$.detRow}>
-          <Ionicons name="receipt-outline" size={14} color="#6B5D4F" style={{ marginRight: 8 }} />
+          <Ionicons name="receipt-outline" size={14} color="#6B6880" style={{ marginRight: 8 }} />
           <Text style={$.detVal}>Booking ID: {item.bookingId || 'N/A'}</Text>
         </View>
       </View>
@@ -301,7 +301,7 @@ const AdminDashboard = () => {
     iconName: 'shield-checkmark-outline', iconColor: '#00E676', title: 'Approve Worker',
     message: `Approve ${item.name} as a verified HunarHub worker?`,
     actions: [
-      { label: 'Cancel',  color: '#6B5D4F', onPress: closeModal },
+      { label: 'Cancel',  color: '#6B6880', onPress: closeModal },
       { label: 'Approve', color: '#00E676', onPress: async () => {
         closeModal();
         try {
@@ -318,7 +318,7 @@ const AdminDashboard = () => {
     iconName: 'close-circle-outline', iconColor: '#FF4C4C', title: 'Reject Worker',
     message: `Reject ${item.name}'s application? They won't appear on the platform.`,
     actions: [
-      { label: 'Cancel', color: '#6B5D4F', onPress: closeModal },
+      { label: 'Cancel', color: '#6B6880', onPress: closeModal },
       { label: 'Reject', color: '#FF4C4C', onPress: async () => {
         closeModal();
         try {
@@ -335,7 +335,7 @@ const AdminDashboard = () => {
     iconName: 'trash-outline', iconColor: '#FF4C4C', title: 'Delete User',
     message: `Permanently delete ${item.name}? This cannot be undone.`,
     actions: [
-      { label: 'Cancel', color: '#6B5D4F', onPress: closeModal },
+      { label: 'Cancel', color: '#6B6880', onPress: closeModal },
       { label: 'Delete', color: '#FF4C4C', onPress: async () => {
         closeModal();
         try {
@@ -349,11 +349,11 @@ const AdminDashboard = () => {
   });
 
   const handleLogout = () => showModal({
-    iconName: 'log-out-outline', iconColor: '#F5A623', title: 'Logout',
+    iconName: 'log-out-outline', iconColor: '#7C3AED', title: 'Logout',
     message: 'Are you sure you want to logout from the Admin Portal?',
     actions: [
-      { label: 'Cancel', color: '#6B5D4F', onPress: closeModal },
-      { label: 'Logout', color: '#F5A623', onPress: async () => {
+      { label: 'Cancel', color: '#6B6880', onPress: closeModal },
+      { label: 'Logout', color: '#7C3AED', onPress: async () => {
         closeModal();
         await AsyncStorage.multiRemove(['userRole', 'userId']);
         await updateUserRole(null);
@@ -365,12 +365,12 @@ const AdminDashboard = () => {
   const renderOverview = () => (
     <ScrollView
       contentContainerStyle={$.ovScroll}
-      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#F5A623" colors={['#F5A623']} />}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#7C3AED" colors={['#7C3AED']} />}
       showsVerticalScrollIndicator={false}
     >
       {/* Welcome Banner */}
-      <LinearGradient colors={['#1C1812', '#2A2018']} style={$.banner}>
-        <LinearGradient colors={['#F5A62315', 'transparent']} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={['#13111C', '#1E1A2E']} style={$.banner}>
+        <LinearGradient colors={['#7C3AED15', 'transparent']} style={StyleSheet.absoluteFill} />
         <View style={$.bannerDot} />
         <View>
           <Text style={$.bannerTitle}>Welcome back, Admin</Text>
@@ -385,8 +385,8 @@ const AdminDashboard = () => {
         <StatCard iconName="shield-checkmark-outline" label="APPROVED" value={stats?.approvedWorkers} color="#00E676" onPress={() => setActiveTab('workers')} />
       </View>
       <View style={$.statsRow}>
-        <StatCard iconName="people-outline"    label="CUSTOMERS" value={stats?.totalCustomers}  color="#F5A623" onPress={() => setActiveTab('customers')} />
-        <StatCard iconName="clipboard-outline" label="BOOKINGS"  value={stats?.totalBookings}   color="#E8621A" onPress={() => {}} />
+        <StatCard iconName="people-outline"    label="CUSTOMERS" value={stats?.totalCustomers}  color="#7C3AED" onPress={() => setActiveTab('customers')} />
+        <StatCard iconName="clipboard-outline" label="BOOKINGS"  value={stats?.totalBookings}   color="#A855F7" onPress={() => {}} />
       </View>
 
       {/* Recent Bookings */}
@@ -415,7 +415,7 @@ const AdminDashboard = () => {
         keyExtractor={item => (item.bookingId || item.id)?.toString() ?? Math.random().toString()}
         contentContainerStyle={[$.list, data.length === 0 && $.listEmpty]}
         showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#F5A623" colors={['#F5A623']} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#7C3AED" colors={['#7C3AED']} />}
         ListHeaderComponent={
           <View style={$.listHeader}>
             <Text style={$.listTitle}>{titles[activeTab]}</Text>
@@ -428,7 +428,7 @@ const AdminDashboard = () => {
           <View style={$.empty}>
             <Ionicons
               name={activeTab === 'customers' ? 'people-outline' : activeTab === 'bookings' ? 'clipboard-outline' : 'construct-outline'}
-              size={48} color="#6B5D4F"
+              size={48} color="#6B6880"
             />
             <Text style={$.emptyTitle}>Nothing here yet</Text>
             <Text style={$.emptySub}>Pull down to refresh</Text>
@@ -447,10 +447,10 @@ const AdminDashboard = () => {
 
   return (
     <View style={$.root}>
-      <StatusBar barStyle="light-content" backgroundColor="#0A0806" />
+      <StatusBar barStyle="light-content" backgroundColor="#07070D" />
 
       {/* ── Header ── */}
-      <LinearGradient colors={['#0A0806', '#0A0806']} style={$.header}>
+      <LinearGradient colors={['#07070D', '#07070D']} style={$.header}>
         <View style={$.hLeft}>
           <View style={$.hDot} />
           <View>
@@ -468,7 +468,7 @@ const AdminDashboard = () => {
       <View style={$.content}>
         {loading && !refreshing ? (
           <View style={$.empty}>
-            <ActivityIndicator size="large" color="#F5A623" />
+            <ActivityIndicator size="large" color="#7C3AED" />
             <Text style={$.emptySub}>Loading...</Text>
           </View>
         ) : activeTab === 'overview' ? renderOverview() : renderList()}
@@ -480,9 +480,9 @@ const AdminDashboard = () => {
           const active = activeTab === tab.key;
           return (
             <TouchableOpacity key={tab.key} style={$.navItem} onPress={() => setActiveTab(tab.key)} activeOpacity={0.8}>
-              {active && <LinearGradient colors={['#F5A62325', 'transparent']} style={$.navActiveGlow} />}
+              {active && <LinearGradient colors={['#7C3AED25', 'transparent']} style={$.navActiveGlow} />}
               <View style={[$.navIconWrap, active && $.navIconWrapActive]}>
-                <Ionicons name={tab.icon} size={22} color={active ? '#F5A623' : '#6B5D4F'} />
+                <Ionicons name={tab.icon} size={22} color={active ? '#7C3AED' : '#6B6880'} />
                 {tab.key === 'pending' && pending.length > 0 && (
                   <View style={$.navBadge}><Text style={$.navBadgeTxt}>{pending.length}</Text></View>
                 )}
@@ -504,51 +504,51 @@ const AdminDashboard = () => {
 
 // ─── Styles ───────────────────────────────────────────────────────────────────
 const $ = StyleSheet.create({
-  root: { flex: 1, backgroundColor: '#0F0D0A' },
+  root: { flex: 1, backgroundColor: '#0A0A0F' },
 
   // Modal
   mOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.82)', justifyContent: 'center', alignItems: 'center' },
   mBox: {
-    width: width * 0.88, backgroundColor: '#1C1812',
-    borderRadius: 24, borderWidth: 1, borderColor: '#2E2820',
+    width: width * 0.88, backgroundColor: '#13111C',
+    borderRadius: 24, borderWidth: 1, borderColor: '#2D2640',
     padding: 28, alignItems: 'center', overflow: 'hidden',
   },
   mGlow:    { position: 'absolute', top: 0, left: 0, right: 0, height: 100 },
   mIconRing:{ width: 72, height: 72, borderRadius: 36, borderWidth: 1.5, justifyContent: 'center', alignItems: 'center', marginBottom: 14 },
-  mTitle:   { fontSize: 22, fontWeight: '800', color: '#F5EFE6', marginBottom: 8, textAlign: 'center' },
-  mMsg:     { fontSize: 15, color: '#8A7D6B', textAlign: 'center', lineHeight: 23, marginBottom: 24 },
+  mTitle:   { fontSize: 22, fontWeight: '800', color: '#F1F0F5', marginBottom: 8, textAlign: 'center' },
+  mMsg:     { fontSize: 15, color: '#6B6880', textAlign: 'center', lineHeight: 23, marginBottom: 24 },
   mBtns:    { flexDirection: 'row', gap: 12, width: '100%' },
   mBtn:     { flex: 1, paddingVertical: 14, borderRadius: 14, borderWidth: 1, alignItems: 'center' },
   mBtnTxt:  { fontWeight: '700', fontSize: 15 },
 
   // Portal
-  pWrap:   { ...StyleSheet.absoluteFillObject, justifyContent: 'center', alignItems: 'center', zIndex: 999, backgroundColor: '#0A0806' },
+  pWrap:   { ...StyleSheet.absoluteFillObject, justifyContent: 'center', alignItems: 'center', zIndex: 999, backgroundColor: '#07070D' },
   pRing:   { position: 'absolute', borderWidth: 1 },
-  pGlow:   { position: 'absolute', width: 120, height: 120, borderRadius: 60, backgroundColor: '#F5A623', opacity: 0.06 },
+  pGlow:   { position: 'absolute', width: 120, height: 120, borderRadius: 60, backgroundColor: '#7C3AED', opacity: 0.06 },
   pCenter: { alignItems: 'center' },
   pAdmin:  { fontSize: 54, fontWeight: '900', color: '#FFFFFF', letterSpacing: 18, textAlign: 'center' },
-  pLine:   { width: 140, height: 3, backgroundColor: '#F5A623', marginVertical: 14, borderRadius: 2 },
-  pPortal: { fontSize: 28, fontWeight: '200', color: '#F5A623', letterSpacing: 14, textAlign: 'center' },
-  pSub:    { fontSize: 11, color: '#3D3020', letterSpacing: 2.5, marginTop: 22, textAlign: 'center' },
+  pLine:   { width: 140, height: 3, backgroundColor: '#7C3AED', marginVertical: 14, borderRadius: 2 },
+  pPortal: { fontSize: 28, fontWeight: '200', color: '#7C3AED', letterSpacing: 14, textAlign: 'center' },
+  pSub:    { fontSize: 11, color: '#2A2440', letterSpacing: 2.5, marginTop: 22, textAlign: 'center' },
 
   // Stat card
-  sc:     { flex: 1, backgroundColor: '#1C1812', borderRadius: 20, borderWidth: 1, padding: 20, alignItems: 'center', overflow: 'hidden' },
+  sc:     { flex: 1, backgroundColor: '#13111C', borderRadius: 20, borderWidth: 1, padding: 20, alignItems: 'center', overflow: 'hidden' },
   scGlow: { position: 'absolute', top: 0, left: 0, right: 0, height: 80 },
   scIcon: { width: 56, height: 56, borderRadius: 16, borderWidth: 1, justifyContent: 'center', alignItems: 'center', marginBottom: 12 },
   scVal:  { fontSize: 36, fontWeight: '800', marginBottom: 4 },
-  scLbl:  { fontSize: 11, color: '#6B5D4F', fontWeight: '700', letterSpacing: 1 },
+  scLbl:  { fontSize: 11, color: '#6B6880', fontWeight: '700', letterSpacing: 1 },
 
   // Header
   header: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
     paddingHorizontal: 20, paddingTop: SIZES.extraLarge * 2, paddingBottom: 16,
-    borderBottomWidth: 1, borderBottomColor: '#2E2820',
+    borderBottomWidth: 1, borderBottomColor: '#2D2640',
   },
   hLeft:  { flexDirection: 'row', alignItems: 'center' },
-  hDot:   { width: 10, height: 10, borderRadius: 5, backgroundColor: '#F5A623', marginRight: 12,
-             shadowColor: '#F5A623', shadowOffset: { width: 0, height: 0 }, shadowOpacity: 1, shadowRadius: 10, elevation: 8 },
-  hTitle: { fontSize: 20, fontWeight: '800', color: '#F5EFE6', letterSpacing: 0.3 },
-  hSub:   { fontSize: 12, color: '#4A3D30', marginTop: 2 },
+  hDot:   { width: 10, height: 10, borderRadius: 5, backgroundColor: '#7C3AED', marginRight: 12,
+             shadowColor: '#7C3AED', shadowOffset: { width: 0, height: 0 }, shadowOpacity: 1, shadowRadius: 10, elevation: 8 },
+  hTitle: { fontSize: 20, fontWeight: '800', color: '#F1F0F5', letterSpacing: 0.3 },
+  hSub:   { fontSize: 12, color: '#3D3654', marginTop: 2 },
   logoutBtn: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingVertical: 9, borderRadius: 12, borderWidth: 1, borderColor: '#FF4C4C35', backgroundColor: '#FF4C4C10' },
   logoutTxt: { fontSize: 13, color: '#FF4C4C', fontWeight: '700' },
 
@@ -558,34 +558,34 @@ const $ = StyleSheet.create({
   ovScroll: { padding: 20, paddingBottom: 20 },
   banner: {
     borderRadius: 20, padding: 20, marginBottom: 20,
-    borderWidth: 1, borderColor: '#2A2018', overflow: 'hidden',
+    borderWidth: 1, borderColor: '#1E1A2E', overflow: 'hidden',
     flexDirection: 'row', alignItems: 'center',
   },
-  bannerDot: { width: 12, height: 12, borderRadius: 6, backgroundColor: '#F5A623', marginRight: 14,
-               shadowColor: '#F5A623', shadowOffset: { width: 0, height: 0 }, shadowOpacity: 1, shadowRadius: 10 },
-  bannerTitle: { fontSize: 18, fontWeight: '800', color: '#F5EFE6', marginBottom: 4 },
-  bannerSub:   { fontSize: 13, color: '#6B5D4F' },
-  secLabel: { fontSize: 11, color: '#4A3D30', fontWeight: '800', letterSpacing: 2, marginBottom: 12, marginTop: 4 },
+  bannerDot: { width: 12, height: 12, borderRadius: 6, backgroundColor: '#7C3AED', marginRight: 14,
+               shadowColor: '#7C3AED', shadowOffset: { width: 0, height: 0 }, shadowOpacity: 1, shadowRadius: 10 },
+  bannerTitle: { fontSize: 18, fontWeight: '800', color: '#F1F0F5', marginBottom: 4 },
+  bannerSub:   { fontSize: 13, color: '#6B6880' },
+  secLabel: { fontSize: 11, color: '#3D3654', fontWeight: '800', letterSpacing: 2, marginBottom: 12, marginTop: 4 },
   statsRow: { flexDirection: 'row', gap: 12, marginBottom: 12 },
 
-  emptyInline: { backgroundColor: '#1C1812', borderRadius: 16, padding: 24, alignItems: 'center', borderWidth: 1, borderColor: '#2E2820', marginBottom: 12 },
-  emptyInlineTxt: { fontSize: 14, color: '#6B5D4F' },
+  emptyInline: { backgroundColor: '#13111C', borderRadius: 16, padding: 24, alignItems: 'center', borderWidth: 1, borderColor: '#2D2640', marginBottom: 12 },
+  emptyInlineTxt: { fontSize: 14, color: '#6B6880' },
 
   // List
   list:      { padding: 20, paddingBottom: 20 },
   listEmpty: { flex: 1 },
   listHeader:{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
-  listTitle: { fontSize: 20, fontWeight: '800', color: '#F5EFE6' },
-  listCount: { backgroundColor: '#1C1812', borderRadius: 10, paddingHorizontal: 12, paddingVertical: 5, borderWidth: 1, borderColor: '#2E2820' },
-  listCountTxt: { fontSize: 12, color: '#6B5D4F', fontWeight: '600' },
+  listTitle: { fontSize: 20, fontWeight: '800', color: '#F1F0F5' },
+  listCount: { backgroundColor: '#13111C', borderRadius: 10, paddingHorizontal: 12, paddingVertical: 5, borderWidth: 1, borderColor: '#2D2640' },
+  listCountTxt: { fontSize: 12, color: '#6B6880', fontWeight: '600' },
 
   empty:      { flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: 80 },
-  emptyTitle: { fontSize: 18, fontWeight: '700', color: '#F5EFE6', marginBottom: 6, marginTop: 12 },
-  emptySub:   { fontSize: 14, color: '#4A3D30', marginTop: 8 },
+  emptyTitle: { fontSize: 18, fontWeight: '700', color: '#F1F0F5', marginBottom: 6, marginTop: 12 },
+  emptySub:   { fontSize: 14, color: '#3D3654', marginTop: 8 },
 
   // Cards
   card: {
-    backgroundColor: '#1C1812', borderRadius: 20, borderWidth: 1, borderColor: '#2E2820',
+    backgroundColor: '#13111C', borderRadius: 20, borderWidth: 1, borderColor: '#2D2640',
     padding: 18, marginBottom: 14, overflow: 'hidden',
   },
   cardGlow: { position: 'absolute', top: 0, left: 0, right: 0, height: 60 },
@@ -593,38 +593,38 @@ const $ = StyleSheet.create({
   cardAv: {
     width: 54, height: 54, borderRadius: 27,
     justifyContent: 'center', alignItems: 'center',
-    marginRight: 14, borderWidth: 1.5, borderColor: '#F5A62330',
+    marginRight: 14, borderWidth: 1.5, borderColor: '#7C3AED30',
   },
-  cardAvTxt: { fontSize: 22, fontWeight: '800', color: '#F5A623' },
+  cardAvTxt: { fontSize: 22, fontWeight: '800', color: '#7C3AED' },
   bkBox:     { width: 54, height: 54, borderRadius: 16, borderWidth: 1, justifyContent: 'center', alignItems: 'center', marginRight: 14 },
-  cardName:  { fontSize: 16, fontWeight: '700', color: '#F5EFE6', marginBottom: 3 },
-  cardSub:   { fontSize: 13, color: '#6B5D4F', marginTop: 2 },
+  cardName:  { fontSize: 16, fontWeight: '700', color: '#F1F0F5', marginBottom: 3 },
+  cardSub:   { fontSize: 13, color: '#6B6880', marginTop: 2 },
   cardSubRow:{ flexDirection: 'row', alignItems: 'center', marginTop: 2 },
   badge:     { borderRadius: 10, borderWidth: 1, paddingHorizontal: 10, paddingVertical: 4 },
   badgeTxt:  { fontSize: 11, fontWeight: '700' },
-  cardDet:   { borderTopWidth: 1, borderTopColor: '#2E2820', paddingTop: 14, gap: 8 },
+  cardDet:   { borderTopWidth: 1, borderTopColor: '#2D2640', paddingTop: 14, gap: 8 },
   detRow:    { flexDirection: 'row', alignItems: 'center' },
-  detVal:    { fontSize: 13, color: '#6B5D4F', flex: 1 },
-  cardActs:  { flexDirection: 'row', marginTop: 14, borderTopWidth: 1, borderTopColor: '#2E2820', paddingTop: 14, gap: 10 },
+  detVal:    { fontSize: 13, color: '#6B6880', flex: 1 },
+  cardActs:  { flexDirection: 'row', marginTop: 14, borderTopWidth: 1, borderTopColor: '#2D2640', paddingTop: 14, gap: 10 },
   actBtn:    { flex: 1, flexDirection: 'row', paddingVertical: 11, borderRadius: 12, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
   actTxt:    { fontSize: 14, fontWeight: '700' },
 
   // Bottom Nav
   nav: {
     flexDirection: 'row',
-    backgroundColor: '#0F0D0A',
-    borderTopWidth: 1, borderTopColor: '#2E2820',
+    backgroundColor: '#0A0A0F',
+    borderTopWidth: 1, borderTopColor: '#2D2640',
     paddingBottom: 8, paddingTop: 4,
   },
   navItem:        { flex: 1, alignItems: 'center', paddingVertical: 8, position: 'relative', overflow: 'hidden' },
   navActiveGlow:  { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
   navIconWrap:    { width: 44, height: 44, borderRadius: 14, justifyContent: 'center', alignItems: 'center', position: 'relative' },
-  navIconWrapActive: { backgroundColor: '#F5A62315', borderWidth: 1, borderColor: '#F5A62325' },
+  navIconWrapActive: { backgroundColor: '#7C3AED15', borderWidth: 1, borderColor: '#7C3AED25' },
   navBadge:       { position: 'absolute', top: -2, right: -2, backgroundColor: '#FF4C4C', borderRadius: 8, minWidth: 16, height: 16, justifyContent: 'center', alignItems: 'center' },
   navBadgeTxt:    { color: '#FFF', fontSize: 9, fontWeight: '800' },
-  navLbl:         { fontSize: 11, color: '#6B5D4F', fontWeight: '600', marginTop: 3 },
-  navLblActive:   { color: '#F5A623', fontWeight: '700' },
-  navActiveLine:  { position: 'absolute', bottom: 0, width: 28, height: 2.5, backgroundColor: '#F5A623', borderRadius: 2 },
+  navLbl:         { fontSize: 11, color: '#6B6880', fontWeight: '600', marginTop: 3 },
+  navLblActive:   { color: '#7C3AED', fontWeight: '700' },
+  navActiveLine:  { position: 'absolute', bottom: 0, width: 28, height: 2.5, backgroundColor: '#7C3AED', borderRadius: 2 },
 });
 
 export default AdminDashboard;

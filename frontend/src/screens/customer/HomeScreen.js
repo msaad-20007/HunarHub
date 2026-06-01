@@ -72,7 +72,7 @@ const HomeScreen = ({ navigation }) => {
   const renderEmpty = () => (
     <View style={styles.emptyContainer}>
       <View style={styles.emptyIconWrap}>
-        <Ionicons name="construct-outline" size={48} color="#6B5D4F" />
+        <Ionicons name="construct-outline" size={48} color="#6B6880" />
       </View>
       <Text style={styles.emptyTitle}>No Workers Found</Text>
       <Text style={styles.emptySubtitle}>
@@ -84,7 +84,7 @@ const HomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       {/* Header */}
-      <LinearGradient colors={['#1C1812', '#0F0D0A']} style={styles.header}>
+      <LinearGradient colors={['#13111C', '#0A0A0F']} style={styles.header}>
         <View>
           <Text style={styles.title}>HunarHub</Text>
           <Text style={styles.headerSub}>
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
     paddingHorizontal: SIZES.padding, paddingTop: SIZES.extraLarge * 2, paddingBottom: SIZES.padding,
-    borderBottomWidth: 1, borderBottomColor: '#2A2018',
+    borderBottomWidth: 1, borderBottomColor: '#1E1A2E',
   },
   title: { ...FONTS.title, color: COLORS.primary, fontSize: 26 },
   headerSub: { ...FONTS.small, color: COLORS.textSecondary, marginTop: 2 },
