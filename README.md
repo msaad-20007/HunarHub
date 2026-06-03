@@ -22,7 +22,7 @@ HunarHub is a full-stack mobile application connecting customers with verified l
 | Layer | Technology |
 |---|---|
 | Frontend | React Native, Expo SDK, React Navigation v6 |
-| Backend | Java 17+, `com.sun.net.httpserver`, JDBC |
+| Backend | Java 17+ (tested on Java 26), `com.sun.net.httpserver`, JDBC |
 | Database | MySQL 8+ |
 | Build Tool | Apache Maven 3.6+ |
 | Email | JavaMail (`javax.mail`) via Gmail SMTP |
@@ -65,7 +65,7 @@ HunarHub/
 Make sure these are installed before running anything:
 
 1. **Node.js** v18+ → [nodejs.org](https://nodejs.org)
-2. **Java JDK 17+** → [adoptium.net](https://adoptium.net)
+2. **Java JDK 17+** → [adoptium.net](https://adoptium.net) *(project compiled with Java 26 — any JDK 17+ works)*
 3. **Apache Maven 3.6+** → [maven.apache.org](https://maven.apache.org)
 4. **XAMPP** (or any MySQL 8+ server) → [apachefriends.org](https://www.apachefriends.org)
 5. **Expo Go** app on your phone → Play Store / App Store
@@ -173,10 +173,10 @@ Open `frontend/src/services/api.js` and check the `BASE_URL`:
 const BASE_URL = 'http://10.0.2.2:8080/api';
 
 // For Physical Device — replace with your PC's local IP:
-const BASE_URL = 'http://192.168.X.X:8080/api';
+const BASE_URL = 'http://192.168.100.6:8080/api';
 ```
 
-> Find your PC's local IP: run `ipconfig` (Windows) → look for **IPv4 Address** under your Wi-Fi adapter.
+> Find your PC's local IP: run `ipconfig` (Windows) → look for **IPv4 Address** under your Wi-Fi adapter. Update this every time your IP changes.
 
 ---
 
@@ -214,7 +214,7 @@ const BASE_URL = 'http://192.168.X.X:8080/api';
 | `Port 8080 already in use` | Kill the process: `netstat -ano \| findstr :8080` then `taskkill /PID <pid> /F` |
 | `npm install` fails | Delete `node_modules` folder and `package-lock.json`, then run `npm install` again |
 | App can't reach backend on physical device | Change `10.0.2.2` to your PC's IPv4 address in `api.js` |
-| `mvn` not recognized | Add Maven `bin` folder to system PATH environment variable |
+| `UnsupportedClassVersionError` on `java` run | Your Java **runtime** is older than the compiler. Install JDK 17+ from [adoptium.net](https://adoptium.net), then open a new terminal so the updated PATH takes effect |
 | Expo QR not scanning | Make sure phone and PC are on the same Wi-Fi network |
 
 ---

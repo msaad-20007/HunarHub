@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const BASE_URL = 'http://192.168.216.97:8080/api'; // PC IPv4 address
+const BASE_URL = 'http://192.168.100.6:8080/api'; // PC IPv4 address
 
 export const apiCall = async (endpoint, method = 'GET', body = null) => {
   try {
