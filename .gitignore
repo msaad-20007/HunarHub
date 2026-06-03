@@ -1,0 +1,17 @@
+# Maven build output
+backend/target/
+
+# Node modules
+frontend/node_modules/
+
+# Expo
+frontend/.expo/
+frontend/dist/
+
+# Environment & secrets
+*.env
+.env.*
+
+# OS files
+.DS_Store
+Thumbs.db
