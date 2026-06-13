@@ -127,8 +127,6 @@ Open a terminal in the `backend` folder and run these two commands:
 mvn clean package -DskipTests
 
 # 2. Run the server
-java -cp target/hunarhub-backend-1.0-SNAPSHOT-jar-with-dependencies.jar com.hunarhub.Main
-```
 
 **Expected output:**
 ```

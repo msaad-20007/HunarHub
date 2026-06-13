@@ -24,8 +24,13 @@ public class Main {
                 // Continue anyway — individual requests will fail gracefully
             }
 
-            // Create HTTP server on port 8080
-            HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+            // Create HTTP server - use PORT env var for Railway, fallback to 8080 locally
+            int port = 8080;
+            String portEnv = System.getenv("PORT");
+            if (portEnv != null && !portEnv.isEmpty()) {
+                port = Integer.parseInt(portEnv);
+            }
+            HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
 
             // ── Auth ──────────────────────────────────────────────────────────
             server.createContext("/api/auth/register",       new AuthHandler.RegisterHandler());
@@ -59,7 +64,7 @@ public class Main {
 
             server.setExecutor(null);
             server.start();
-            System.out.println("✅ HunarHub Backend started on port 8080");
+            System.out.println("✅ HunarHub Backend started on port " + port);
 
             Runtime.getRuntime().addShutdownHook(new Thread(() ->
                 System.out.println("Server shutting down...")));
